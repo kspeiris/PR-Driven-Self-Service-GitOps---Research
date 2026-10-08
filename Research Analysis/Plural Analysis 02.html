@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plural PR Automation — Interactive Architecture</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1a2b;--panel2:#10233a;--text:#e9f1fb;--muted:#9db0c7;--line:#27415f;--accent:#64d8ff;--accent2:#8b7cff;--good:#57e389;--warn:#ffc857;--bad:#ff6b7a;--shadow:0 18px 55px #0007}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 20% 0%,#17365a 0,#07111f 38%),var(--bg);color:var(--text);font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:var(--accent)}button{font:inherit}.wrap{max-width:1450px;margin:auto;padding:28px}
+.hero{padding:48px 34px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(135deg,#102b47dd,#0b1728e8);box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero:after{content:"";position:absolute;width:380px;height:380px;border-radius:50%;background:#64d8ff12;right:-120px;top:-170px;filter:blur(8px)}
+.badge{display:inline-flex;gap:8px;align-items:center;padding:6px 11px;border:1px solid #ffffff20;border-radius:999px;background:#ffffff08;color:#bfefff}
+h1{font-size:clamp(34px,5vw,64px);line-height:1.02;margin:18px 0 14px;max-width:950px}h2{font-size:30px;margin:0 0 12px}h3{margin:8px 0}.lead{font-size:18px;color:#c8d6e8;max-width:900px}
+.toolbar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;padding:12px 0;background:#07111fe8;backdrop-filter:blur(16px)}
+.btn{border:1px solid var(--line);background:#0d1c2d;color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer}.btn:hover,.btn.active{border-color:var(--accent);box-shadow:0 0 0 2px #64d8ff18}.btn.primary{background:linear-gradient(135deg,#167da1,#5448a5);border-color:#6ee1ff55}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:22px}.card{grid-column:span 12;background:#0b1828cc;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 10px 35px #0004}.half{grid-column:span 6}.third{grid-column:span 4}
+@media(max-width:900px){.half,.third{grid-column:span 12}}
+.section{scroll-margin-top:78px}.muted{color:var(--muted)}.small{font-size:13px}.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#ffffff0c;border:1px solid #ffffff16;color:#cfe1f4;margin:2px}
+.diagram{position:relative;min-height:400px;padding:26px;background:#06101ddd;border:1px solid #20364f;border-radius:18px;overflow:hidden}
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}.node{min-width:135px;padding:14px 12px;text-align:center;border:1px solid #2c4a68;background:linear-gradient(180deg,#11263d,#0b1828);border-radius:14px;position:relative;transition:.3s}.node:hover{transform:translateY(-4px);border-color:var(--accent)}.node .icon{font-size:25px}.arrow{color:var(--accent);font-size:24px;opacity:.8}.packet{position:absolute;width:10px;height:10px;background:var(--accent);border-radius:50%;box-shadow:0 0 18px var(--accent);animation:travel 4s linear infinite;display:none}@keyframes travel{0%{left:5%;top:50%;opacity:0}10%{opacity:1}90%{opacity:1}100%{left:95%;top:50%;opacity:0}}
+.code{background:#050b13;border:1px solid #20354b;border-radius:13px;padding:16px;overflow:auto;color:#dcecff;white-space:pre;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}.kw{color:#7ddcff}.str{color:#9ee493}.key{color:#c9a7ff}
+details{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0;background:#ffffff04}summary{cursor:pointer;font-weight:700}
+.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.table th{color:#bfefff}
+.status{display:flex;gap:10px;align-items:center;padding:11px;border-radius:11px;background:#ffffff07;margin:8px 0}.dot{width:10px;height:10px;border-radius:50%;background:var(--good);box-shadow:0 0 12px currentColor}.warn .dot{background:var(--warn)}.bad .dot{background:var(--bad)}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.step{padding:14px;border:1px solid var(--line);border-radius:12px;background:#ffffff05;opacity:.5;transition:.3s}.step.on{opacity:1;border-color:var(--accent);background:#64d8ff0c}.step b{display:block;color:#fff}
+@media(max-width:800px){.timeline{grid-template-columns:1fr}}
+#simOutput{min-height:180px}.log{font:13px/1.5 ui-monospace,monospace;color:#cce3f7}.log div{padding:3px 0}.ok{color:var(--good)}.warning{color:var(--warn)}.error{color:var(--bad)}
+.footer{color:#8195ab;padding:30px 0;text-align:center}
+.hidden{display:none!important}.source{border-left:3px solid var(--accent);padding:8px 14px;color:#b9cbe0;background:#64d8ff07}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <span class="badge">◈ Interactive architecture • Plural PR Automation</span>
+  <h1>From Developer Intent to GitOps Deployment</h1>
+  <p class="lead">A single-page, interactive explanation of how Plural's <b>PrAutomation</b> model turns a self-service form into generated Git changes, a Pull Request, governance/review, and finally GitOps reconciliation.</p>
+  <p class="small muted">Based on the supplied Plural PR Automation material. Where the source describes a mechanism as a design/proposed pattern rather than an explicit Plural implementation, it is labelled accordingly.</p>
+</header>
+
+<nav class="toolbar">
+  <button class="btn primary" onclick="scrollToId('architecture')">Architecture</button>
+  <button class="btn" onclick="scrollToId('ui')">Developer UI</button>
+  <button class="btn" onclick="scrollToId('engine')">Automation Engine</button>
+  <button class="btn" onclick="scrollToId('conflict')">PR / Conflicts</button>
+  <button class="btn" onclick="scrollToId('pipeline')">Promotion</button>
+  <button class="btn" onclick="scrollToId('governance')">Governance</button>
+  <button class="btn" onclick="scrollToId('mapping')">OpenChoreo Mapping</button>
+  <button class="btn" onclick="runSimulation()">▶ Run live flow</button>
+</nav>
+
+<section id="architecture" class="section grid">
+<div class="card">
+<h2>1. Complete architecture</h2>
+<p class="muted">The reusable self-service model has two main actors: the platform engineer defines the automation; the developer consumes it through the console.</p>
+<div class="diagram">
+<div class="packet" id="packet"></div>
+<div class="flow">
+  <div class="node"><div class="icon">👩‍💻</div><b>Developer</b><small>Intent</small></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">🖥️</div><b>Plural Console</b><small>PR tab / form</small></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">⚙️</div><b>PrAutomation</b><small>Reusable workflow</small></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">🧩</div><b>Liquid / Lua / AI</b><small>Generate / modify</small></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">🌿</div><b>Git branch</b><small>Generated files</small></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">🔀</div><b>Pull Request</b><small>Review gate</small></div>
+</div>
+<div class="flow" style="margin-top:22px">
+  <div class="node"><div class="icon">✅</div><b>Checks / Review</b></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">🏛️</div><b>Governance</b><small>Optional</small></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">🔗</div><b>Merge</b></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">♻️</div><b>GitOps</b><small>Reconcile</small></div><div class="arrow">→</div>
+  <div class="node"><div class="icon">☸️</div><b>Kubernetes</b></div>
+</div>
+</div>
+<div class="source">The supplied material describes the core flow as developer intent → PR Automation → generated/modified Git files → Pull Request → review/approval → merge → GitOps → Kubernetes.</div>
+</div>
+</section>
+
+<section id="ui" class="section grid">
+<div class="card half">
+<h2>2. Developer UI — dynamically generated form</h2>
+<p class="muted">The <code>configuration</code> entries define the inputs exposed by the automation. Change the fields below and see the generated context.</p>
+<label>Workspace name<br><input id="name" value="payments" oninput="updateContext()"></label><br><br>
+<label>Cluster<br><select id="cluster" onchange="updateContext()"><option>production</option><option>staging</option><option>development</option></select></label><br><br>
+<label>Repository<br><input id="repo" value="payments-repo" oninput="updateContext()"></label><br><br>
+<label>Group<br><input id="group" value="backend-team" oninput="updateContext()"></label><br><br>
+<label>Workloads<br><input id="workloads" value="api,frontend" oninput="updateContext()"></label>
+</div>
+<div class="card half">
+<h2>Generated context</h2>
+<pre class="code" id="context"></pre>
+<h3>Template preview</h3>
+<pre class="code" id="rendered"></pre>
+<button class="btn primary" onclick="runSimulation()">Create PR</button>
+</div>
+</section>
+
+<section id="engine" class="section grid">
+<div class="card half">
+<h2>3. What the PrAutomation defines</h2>
+<div class="code">apiVersion: deployments.plural.sh/v1alpha1
+kind: PrAutomation
+
+spec:
+  name: workspace-creator
+
+  creates:
+    templates:
+      - source: templates/service.yaml.liquid
+        destination: apps/workspaces/{{ context.name }}.yaml
+
+      - source: templates/workspace.yaml.liquid
+        destination: workspaces/{{ context.name }}.yaml
+
+  scmConnectionRef:
+    name: github
+
+  title: 'Adding workspace {{ context.name }} for {{ context.group }}'
+
+  configuration:
+    - name: name
+      type: STRING
+    - name: cluster
+      type: STRING
+    - name: repo
+      type: STRING
+    - name: group
+      type: STRING
+    - name: workloads
+      type: STRING</div>
+</div>
+<div class="card half">
+<h2>4. Generation mechanisms</h2>
+<div class="status"><span class="dot"></span><div><b>Liquid</b><br><span class="muted">Simple deterministic generation and transformations.</span></div></div>
+<div class="status"><span class="dot"></span><div><b>Lua</b><br><span class="muted">Complex deterministic logic, inference, file parsing and custom rules.</span></div></div>
+<div class="status"><span class="dot"></span><div><b>AI PR Automation</b><br><span class="muted">Sandboxed coding-agent changes for less structured repository modifications.</span></div></div>
+<p class="small muted">These are complementary mechanisms; the automation chooses the appropriate approach.</p>
+</div>
+</section>
+
+<section id="conflict" class="section grid">
+<div class="card">
+<h2>5. PR creation & conflict model</h2>
+<p>There are two different concepts that should not be mixed:</p>
+<div class="grid">
+<div class="card third">
+<h3>🟦 Existing PR / duplicate</h3>
+<p>Before creating another change, an implementation can look for an existing open PR/branch for the same logical change and reuse/update it where supported.</p>
+</div>
+<div class="card third">
+<h3>🟨 Mergeability</h3>
+<p>The Git provider is the authority for whether the PR can merge cleanly. A PR may become conflicting when its target branch changes after the PR was created.</p>
+</div>
+<div class="card third">
+<h3>🟥 Resolution</h3>
+<p>Detecting a conflict is not the same as automatically resolving it. The supplied material does <b>not</b> document automatic merge-conflict resolution as a native Plural feature.</p>
+</div>
+</div>
+<h3>Interactive conflict simulation</h3>
+<div class="timeline" id="conflictTimeline">
+<div class="step on"><b>1. PR opened</b>Clean at creation</div>
+<div class="step"><b>2. Main changes</b>Another commit lands</div>
+<div class="step"><b>3. Git recalculates</b>Mergeability can change</div>
+<div class="step"><b>4. Conflict</b>PR is no longer cleanly mergeable</div>
+<div class="step"><b>5. Resolve</b>Update/rebase and re-check</div>
+</div>
+<br><button class="btn" onclick="playConflict()">▶ Simulate conflict</button>
+<pre class="code" id="conflictLog">Click “Simulate conflict” to animate the state change.</pre>
+<div class="source">The supplied research for Project 702 proposes using the Git provider API to inspect PR mergeability and explicitly treats automatic merge-conflict resolution as a non-goal. This is therefore shown here as the distinction between provider-reported state and platform handling.</div>
+</div>
+</section>
+
+<section id="pipeline" class="section grid">
+<div class="card">
+<h2>6. Promotion PR pipeline</h2>
+<div class="diagram">
+<div class="flow">
+<div class="node"><div class="icon">📦</div><b>PipelineContext</b><small>version: 6.5.4</small></div><div class="arrow">→</div>
+<div class="node"><div class="icon">🧪</div><b>DEV</b><small>PR Automation</small></div><div class="arrow">→</div>
+<div class="node"><div class="icon">🔬</div><b>Integration test</b></div><div class="arrow">→</div>
+<div class="node"><div class="icon">🔐</div><b>Approval gate</b></div><div class="arrow">→</div>
+<div class="node"><div class="icon">🚀</div><b>PROD</b><small>PR Automation</small></div>
+</div>
+</div>
+<p class="muted">Plural can use PR Automation as pipeline stages so environment promotion remains auditable and reviewable.</p>
+</div>
+</section>
+
+<section id="governance" class="section grid">
+<div class="card half">
+<h2>7. Governance</h2>
+<pre class="code">PR body:
+Plural governance: snow
+
+PR opened
+  ↓
+Governance change request
+  ↓
+Wait for approval / scheduled state
+  ↓
+Approve PR
+  ↓
+Merge
+  ↓
+Close governance change</pre>
+</div>
+<div class="card half">
+<h2>8. PR correlation</h2>
+<div class="code">Plural Service: prod/payment
+Plural Stack: my-stack
+Plural governance: snow
+Plural Flow: my-flow
+Plural Preview: my-preview-template
+Plural merge cron: */5 1,2 * * *</div>
+<p class="muted">These description patterns let Plural associate a PR with a service, stack, governance workflow, preview flow, or merge schedule.</p>
+</div>
+</section>
+
+<section class="section grid">
+<div class="card half">
+<h2>9. Preview environment lifecycle</h2>
+<div class="timeline">
+<div class="step on"><b>PR opened</b>Preview created</div>
+<div class="step on"><b>Push</b>Preview updated</div>
+<div class="step on"><b>Review</b>Developer tests</div>
+<div class="step on"><b>Merge/close</b>Lifecycle ends</div>
+</div>
+</div>
+<div class="card half">
+<h2>10. Testing</h2>
+<pre class="code">plural pr test --file path/to/pr-automation-cr.yaml
+
+plural pr contracts --file contracts.yaml</pre>
+<p class="muted">The supplied material describes <code>plural pr test</code> as a safe local test path that does not create a real PR, and contract tests for expected generated Git changes.</p>
+</div>
+</section>
+
+<section id="mapping" class="section grid">
+<div class="card">
+<h2>11. Plural → OpenChoreo Project 702 mapping</h2>
+<table class="table">
+<tr><th>Plural</th><th>OpenChoreo Project 702</th></tr>
+<tr><td>Plural Console</td><td>OpenChoreo Developer Portal</td></tr>
+<tr><td><code>PrAutomation</code></td><td>Backstage Scaffolder Template</td></tr>
+<tr><td><code>configuration</code></td><td>Scaffolder parameters</td></tr>
+<tr><td><code>context</code></td><td>Developer input/context</td></tr>
+<tr><td>Liquid / Lua / AI</td><td><code>occ</code> + optional generation helpers</td></tr>
+<tr><td><code>ScmConnection</code></td><td>GitHub/GitLab integration</td></tr>
+<tr><td><code>creates.templates</code></td><td>Generated Workload / ComponentRelease / ReleaseBinding</td></tr>
+<tr><td>Pipeline</td><td>Promotion workflow</td></tr>
+<tr><td>PrGovernance</td><td>Enterprise approval mechanism</td></tr>
+<tr><td>PR webhook / correlation</td><td>PR → merge SHA → Flux revision → OpenChoreo status</td></tr>
+<tr><td>GitOps</td><td>Flux CD / Argo CD</td></tr>
+</table>
+</div>
+<div class="card">
+<h2>12. Recommended Project 702 architecture</h2>
+<div class="diagram">
+<div class="flow">
+<div class="node"><b>Developer</b></div><div class="arrow">→</div>
+<div class="node"><b>OpenChoreo Portal</b></div><div class="arrow">→</div>
+<div class="node"><b>Scaffolder</b></div><div class="arrow">→</div>
+<div class="node"><b>Conflict Check</b></div><div class="arrow">→</div>
+<div class="node"><b>occ</b></div><div class="arrow">→</div>
+<div class="node"><b>Git PR</b></div><div class="arrow">→</div>
+<div class="node"><b>Flux / Argo</b></div><div class="arrow">→</div>
+<div class="node"><b>OpenChoreo</b></div>
+</div>
+</div>
+<p class="source">The supplied Project 702 material proposes this architecture and explicitly keeps automatic merge-conflict resolution out of scope.</p>
+</div>
+</section>
+
+<section class="section grid">
+<div class="card">
+<h2>13. Live event simulator</h2>
+<p class="muted">This is a visual simulation of the conceptual flow, not a live connection to GitHub or Plural.</p>
+<div id="simOutput" class="code log">Ready.</div>
+</div>
+</section>
+
+<footer class="footer">
+Standalone HTML • No external libraries • Responsive • Interactive diagrams • Dynamic form/context • Conflict simulation • Architecture mapping
+</footer>
+</div>
+
+<script>
+function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:"smooth"})}
+function val(id){return document.getElementById(id).value}
+function updateContext(){
+ const c={name:val("name"),cluster:val("cluster"),repo:val("repo"),group:val("group"),workloads:val("workloads")};
+ document.getElementById("context").textContent=JSON.stringify(c,null,2);
+ document.getElementById("rendered").textContent=
+`metadata:
+  name: ${c.name}
+  namespace: infra
+
+spec:
+  namespace: ${c.name}
+  clusterRef:
+    name: ${c.cluster}
+
+# generated destination:
+apps/workspaces/${c.name}.yaml`;
+}
+updateContext();
+
+function runSimulation(){
+ const out=document.getElementById("simOutput");
+ const packet=document.getElementById("packet");
+ packet.style.display="block";
+ const events=[
+ ["info","Developer submitted the self-service form."],
+ ["info","Plural builds the automation context."],
+ ["ok","Liquid/template inputs are rendered into Git files."],
+ ["ok","SCM connection selected: GitHub."],
+ ["ok","Branch + commit + Pull Request workflow starts."],
+ ["warning","Git provider remains the source of truth for PR mergeability."],
+ ["ok","After review/approval, merge sends the change into GitOps reconciliation."],
+ ["ok","GitOps applies the merged desired state to Kubernetes."]
+ ];
+ out.innerHTML="";
+ events.forEach((e,i)=>setTimeout(()=>{const d=document.createElement("div");d.className=e[0];d.textContent="["+e[0].toUpperCase()+"] "+e[1];out.appendChild(d)},i*650));
+ setTimeout(()=>packet.style.display="none",events.length*650+500);
+}
+
+async function playConflict(){
+ const steps=[...document.querySelectorAll("#conflictTimeline .step")];
+ const log=document.getElementById("conflictLog");
+ const lines=[
+ "PR #101 opened — mergeable state is currently clean.",
+ "Another commit lands on the target branch.",
+ "The Git provider recalculates PR mergeability.",
+ "PR #101 is now conflicting / cannot merge cleanly.",
+ "Platform should surface the conflict; automatic resolution is not assumed.",
+ "Developer or automation updates the branch, then mergeability is checked again."
+ ];
+ log.textContent="";
+ for(let i=0;i<steps.length;i++){
+   steps.forEach((s,j)=>s.classList.toggle("on",j<=i));
+   log.textContent += (i?"\n":"") + lines[i];
+   await new Promise(r=>setTimeout(r,850));
+ }
+}
+</script>
+</body>
+</html>

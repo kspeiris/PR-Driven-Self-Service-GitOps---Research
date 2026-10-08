@@ -1,0 +1,319 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+
+metadata:
+  name: openchoreo-gitops-promote
+  title: Promote OpenChoreo Component
+  description: >
+    Promote an OpenChoreo component through a GitOps Pull Request.
+    The workflow checks for conflicting changes, renders the required
+    ReleaseBinding manifests using occ, and opens a GitHub Pull Request.
+  tags:
+    - openchoreo
+    - gitops
+    - github
+    - flux
+    - releasebinding
+
+spec:
+  owner: platform-team
+  type: service
+
+  parameters:
+
+    # ============================================================
+    # 1. Promotion Details
+    # ============================================================
+
+    - title: Promotion Details
+      description: Select the OpenChoreo component and target environment.
+      required:
+        - namespace
+        - project
+        - component
+        - environment
+      properties:
+
+        namespace:
+          title: Namespace
+          type: string
+          description: OpenChoreo namespace.
+          pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+          ui:autofocus: true
+
+        project:
+          title: Project
+          type: string
+          description: OpenChoreo project name.
+          pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+
+        component:
+          title: Component
+          type: string
+          description: OpenChoreo component to promote.
+          pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+
+        environment:
+          title: Target Environment
+          type: string
+          description: Environment where the component should be promoted.
+          enum:
+            - development
+            - staging
+            - production
+
+          enumNames:
+            - Development
+            - Staging
+            - Production
+
+    # ============================================================
+    # 2. GitOps Repository
+    # ============================================================
+
+    - title: GitOps Repository
+      description: Repository where OpenChoreo GitOps resources are stored.
+      required:
+        - repoOwner
+        - repoName
+        - targetBranch
+      properties:
+
+        repoOwner:
+          title: GitHub Organization / Owner
+          type: string
+          description: GitHub organization or repository owner.
+          example: openchoreo
+
+        repoName:
+          title: GitOps Repository
+          type: string
+          description: GitHub repository containing OpenChoreo GitOps resources.
+          example: sample-gitops
+
+        targetBranch:
+          title: Target Branch
+          type: string
+          description: Branch into which the Pull Request will be opened.
+          default: main
+
+    # ============================================================
+    # 3. Pull Request Configuration
+    # ============================================================
+
+    - title: Pull Request
+      description: Configure the Pull Request created by this workflow.
+      required:
+        - reviewers
+      properties:
+
+        reviewers:
+          title: Reviewers
+          type: array
+          description: GitHub users who should review the Pull Request.
+          items:
+            type: string
+          ui:options:
+            orderable: true
+
+        draft:
+          title: Create as Draft
+          type: boolean
+          description: Create the Pull Request as a draft.
+          default: false
+
+  # ==============================================================
+  # WORKFLOW
+  # ==============================================================
+
+  steps:
+
+    # ============================================================
+    # STEP 1 - Validate inputs
+    # ============================================================
+
+    - id: validate
+      name: Validate promotion request
+      action: openchoreo:gitops:validate
+      input:
+        namespace: ${{ parameters.namespace }}
+        project: ${{ parameters.project }}
+        component: ${{ parameters.component }}
+        environment: ${{ parameters.environment }}
+
+    # ============================================================
+    # STEP 2 - Calculate deterministic GitOps target path
+    # ============================================================
+
+    - id: resolve-path
+      name: Resolve GitOps target path
+      action: openchoreo:gitops:resolve-path
+      input:
+        namespace: ${{ parameters.namespace }}
+        project: ${{ parameters.project }}
+        component: ${{ parameters.component }}
+        environment: ${{ parameters.environment }}
+
+    # ============================================================
+    # STEP 3 - Check for conflicting changes
+    # ============================================================
+
+    - id: conflict-check
+      name: Check for conflicting Pull Requests
+      action: openchoreo:gitops:check-conflicts
+      input:
+        repoOwner: ${{ parameters.repoOwner }}
+        repoName: ${{ parameters.repoName }}
+        targetBranch: ${{ parameters.targetBranch }}
+
+        namespace: ${{ parameters.namespace }}
+        project: ${{ parameters.project }}
+        component: ${{ parameters.component }}
+        environment: ${{ parameters.environment }}
+
+        targetPath: ${{ steps['resolve-path'].output.targetPath }}
+
+    # ============================================================
+    # STEP 4 - Render OpenChoreo resources using occ
+    # ============================================================
+
+    - id: render
+      name: Render OpenChoreo manifests
+      action: openchoreo:gitops:render
+      input:
+        namespace: ${{ parameters.namespace }}
+        project: ${{ parameters.project }}
+        component: ${{ parameters.component }}
+        environment: ${{ parameters.environment }}
+
+        targetPath: ${{ steps['resolve-path'].output.targetPath }}
+
+        # GitOps repository information
+        repoOwner: ${{ parameters.repoOwner }}
+        repoName: ${{ parameters.repoName }}
+        targetBranch: ${{ parameters.targetBranch }}
+
+    # ============================================================
+    # STEP 5 - Create / update GitHub Pull Request
+    # ============================================================
+
+    - id: publish
+      name: Create GitHub Pull Request
+      action: publish:github:pull-request
+      input:
+
+        # --------------------------------------------------------
+        # GitHub repository
+        # --------------------------------------------------------
+
+        repoUrl: github.com?owner=${{ parameters.repoOwner }}&repo=${{ parameters.repoName }}
+
+        # --------------------------------------------------------
+        # Deterministic branch
+        # --------------------------------------------------------
+
+        branchName: >
+          openchoreo/promote/${{
+            parameters.namespace
+          }}/${{
+            parameters.project
+          }}/${{
+            parameters.component
+          }}/${{
+            parameters.environment
+          }}
+
+        targetBranchName: ${{ parameters.targetBranch }}
+
+        # --------------------------------------------------------
+        # Pull Request information
+        # --------------------------------------------------------
+
+        title: >
+          chore(openchoreo):
+          promote ${{ parameters.component }}
+          to ${{ parameters.environment }}
+
+        description: |
+          ## OpenChoreo GitOps Promotion
+
+          This Pull Request was generated automatically by
+          the OpenChoreo Developer Portal.
+
+          ### Promotion
+
+          | Property | Value |
+          |---|---|
+          | Namespace | `${{ parameters.namespace }}` |
+          | Project | `${{ parameters.project }}` |
+          | Component | `${{ parameters.component }}` |
+          | Environment | `${{ parameters.environment }}` |
+
+          ### GitOps
+
+          Target path:
+
+          `${{ steps['resolve-path'].output.targetPath }}`
+
+          ### Workflow
+
+          Developer Portal
+          → Scaffolder
+          → Conflict Check
+          → occ Render
+          → GitHub Pull Request
+          → Review
+          → Merge
+          → Flux CD
+          → OpenChoreo
+
+          > This PR was generated by the OpenChoreo GitOps self-service workflow.
+
+        commitMessage: >
+          chore(openchoreo):
+          promote ${{ parameters.component }}
+          to ${{ parameters.environment }}
+
+        # --------------------------------------------------------
+        # Generated files
+        # --------------------------------------------------------
+
+        sourcePath: .
+
+        targetPath: ${{ steps['resolve-path'].output.targetPath }}
+
+        # --------------------------------------------------------
+        # PR behaviour
+        # --------------------------------------------------------
+
+        update: true
+
+        createWhenEmpty: false
+
+        draft: ${{ parameters.draft }}
+
+        reviewers: ${{ parameters.reviewers }}
+
+  # ==============================================================
+  # OUTPUTS
+  # ==============================================================
+
+  output:
+
+    links:
+
+      - title: View Pull Request
+        url: ${{ steps['publish'].output.remoteUrl }}
+
+      - title: GitHub Repository
+        url: https://github.com/${{ parameters.repoOwner }}/${{ parameters.repoName }}
+
+    text:
+
+      - title: Pull Request Number
+        content: |
+          #${{ steps['publish'].output.pullRequestNumber }}
+
+      - title: Target Path
+        content: |
+          `${{ steps['resolve-path'].output.targetPath }}`
