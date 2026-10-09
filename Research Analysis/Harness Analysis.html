@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0b1220" />
+<title>Harness GitOps PR Pipelines — Interactive Architecture Guide</title>
+<style>
+:root{
+  --bg:#08111f;--panel:#101c2e;--panel2:#132238;--line:#263851;--text:#eaf2ff;--muted:#a4b5cc;
+  --cyan:#5ee7f5;--blue:#78a9ff;--violet:#b8a0ff;--green:#6ee7ad;--amber:#ffd27a;--red:#ff8b9a;
+  --shadow:0 18px 50px rgba(0,0,0,.24);--radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;background:radial-gradient(ellipse at 10% 0%,#14294a 0,transparent 35%),radial-gradient(ellipse at 90% 12%,#1d2147 0,transparent 28%),var(--bg);color:var(--text);font:15px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline}
+button,select,input{font:inherit}
+button{cursor:pointer}
+.topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px clamp(16px,4vw,56px);background:rgba(8,17,31,.84);backdrop-filter:blur(18px);border-bottom:1px solid rgba(120,169,255,.16)}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.2px}
+.brand-mark{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#08111f;font-weight:950}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#15243a;color:var(--text);padding:9px 13px;border-radius:10px;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{transform:translateY(-1px);border-color:var(--cyan);background:#1b304b}
+.btn.primary{background:linear-gradient(120deg,#63e3ee,#8cb7ff);color:#071321;border:0;font-weight:800}
+.btn.ghost{background:transparent}
+.btn.small{padding:6px 10px;font-size:12px}
+.hero{padding:76px clamp(18px,6vw,92px) 44px;max-width:1500px;margin:auto}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid #31516a;background:#10283a;color:var(--cyan);padding:6px 11px;border-radius:99px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px #6ee7ad20;animation:pulse 1.8s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 9px #6ee7ad00}}
+h1{font-size:clamp(36px,5.6vw,72px);line-height:1.04;letter-spacing:-.045em;margin:22px 0 20px;max-width:1000px}
+.gradient-text{background:linear-gradient(100deg,#fff 5%,var(--cyan) 45%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:clamp(16px,1.8vw,20px);max-width:850px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0}
+.hero-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:35px;max-width:1000px}
+.stat{padding:16px 18px;border:1px solid var(--line);border-radius:15px;background:linear-gradient(145deg,#132238c9,#0d1929c9)}
+.stat strong{display:block;font-size:23px;color:var(--cyan)}.stat span{font-size:12px;color:var(--muted)}
+.layout{max-width:1500px;margin:auto;padding:0 clamp(14px,3.5vw,52px) 80px;display:grid;grid-template-columns:245px minmax(0,1fr);gap:28px}
+.sidebar{position:sticky;top:78px;align-self:start;max-height:calc(100vh - 95px);overflow:auto;padding:15px;border:1px solid var(--line);background:#0d1929d9;border-radius:16px}
+.sidebar h3{margin:3px 10px 12px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.13em}
+.navlink{display:flex;align-items:center;gap:10px;color:#c1d0e4;padding:9px 10px;border-radius:9px;font-size:13px;margin:2px 0}
+.navlink:hover,.navlink.active{background:#20324b;color:white;text-decoration:none}.navlink.active{box-shadow:inset 3px 0 var(--cyan)}
+.content{min-width:0}
+section{margin-bottom:28px;scroll-margin-top:90px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:16px}
+.kicker{color:var(--cyan);text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.15em}
+h2{font-size:clamp(24px,3vw,36px);line-height:1.15;margin:7px 0 8px;letter-spacing:-.025em}
+h3{margin:0 0 8px;font-size:18px}h4{margin:0 0 6px}
+.lead{color:var(--muted);max-width:900px;margin:0}
+.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(17,31,50,.96),rgba(12,24,40,.96));border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.card + .card{margin-top:14px}
+.grid{display:grid;gap:14px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#1b3851;color:var(--cyan);font-size:20px;margin-bottom:13px}
+.muted{color:var(--muted)}.smalltext{font-size:12px;color:var(--muted)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border:1px solid #36506c;border-radius:99px;padding:4px 8px;color:#c5d8f0;background:#15273c}
+.tag.cyan{color:var(--cyan);border-color:#2b7180;background:#0e303c}.tag.green{color:var(--green);border-color:#27664f;background:#0c2b24}.tag.amber{color:var(--amber);border-color:#7c6033;background:#302615}.tag.violet{color:var(--violet);border-color:#5a4a87;background:#251e3d}
+.callout{border-left:3px solid var(--cyan);background:#102739;padding:14px 16px;border-radius:0 12px 12px 0;color:#d7e8f6;margin:16px 0}
+.callout.warn{border-color:var(--amber);background:#2a2418}.callout.good{border-color:var(--green);background:#102920}
+.arch-shell{overflow:hidden}
+.arch-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:18px}
+.arch-toolbar .group{display:flex;gap:7px;flex-wrap:wrap}
+.architecture{display:grid;grid-template-columns:1fr 54px 1fr 54px 1fr;gap:8px;align-items:stretch}
+.arch-col{display:flex;flex-direction:column;gap:10px}
+.node{position:relative;text-align:left;width:100%;border:1px solid #334c67;border-radius:14px;background:linear-gradient(145deg,#162a43,#101e31);padding:15px;color:var(--text);min-height:88px;transition:transform .25s,border-color .25s,box-shadow .25s;overflow:hidden}
+.node:hover{transform:translateY(-3px);border-color:var(--cyan)}
+.node .node-icon{font-size:20px;display:block;margin-bottom:7px}
+.node strong{display:block;font-size:14px}.node small{display:block;color:var(--muted);font-size:11px;line-height:1.45;margin-top:4px}
+.node.selected{border-color:var(--cyan);box-shadow:0 0 0 2px #5ee7f526,0 0 30px #5ee7f516}
+.node.done{border-color:#48c997;background:linear-gradient(145deg,#153a37,#102a2a)}
+.node.active-step{animation:nodeGlow 1.5s infinite;border-color:var(--cyan)}
+@keyframes nodeGlow{50%{box-shadow:0 0 0 5px #5ee7f51a,0 0 30px #5ee7f52a}}
+.arrow{display:grid;place-items:center;color:#58708f;font-size:26px;position:relative}
+.arrow span{display:block;animation:arrowFloat 1.4s infinite ease-in-out}
+@keyframes arrowFloat{50%{transform:translateX(5px);color:var(--cyan)}}
+.vertical-arrow{text-align:center;color:#55718f;font-size:21px;line-height:1.1}
+.node-detail{margin-top:17px;border:1px solid #2b526a;background:#0d2232;border-radius:14px;padding:18px;min-height:130px}
+.node-detail h3{color:var(--cyan)}
+.pipeline{display:flex;align-items:stretch;gap:8px;overflow-x:auto;padding:10px 2px 16px}
+.pipe-step{min-width:150px;flex:1;border:1px solid var(--line);border-radius:13px;background:#132238;padding:14px;position:relative;transition:.25s}
+.pipe-step strong{display:block;font-size:13px}.pipe-step small{display:block;color:var(--muted);font-size:11px;margin-top:5px}
+.pipe-step .num{width:24px;height:24px;border-radius:8px;background:#203d57;color:var(--cyan);display:grid;place-items:center;font-weight:800;font-size:12px;margin-bottom:10px}
+.pipe-step.current{border-color:var(--cyan);box-shadow:0 0 0 2px #5ee7f51c}.pipe-step.completed{border-color:#3b8b70;background:#102b29}.pipe-step.completed .num{background:#28664f;color:#d7ffeb}
+.pipe-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.progress{height:5px;background:#22344a;border-radius:10px;overflow:hidden;margin:12px 0}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width .4s}
+.log{background:#07101b;border:1px solid #26384d;border-radius:12px;padding:14px;font:12px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;color:#b9cde3;min-height:100px;white-space:pre-wrap;overflow-wrap:anywhere}
+.log .ok{color:var(--green)}.log .info{color:var(--cyan)}.log .warn{color:var(--amber)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:16px}
+.tab{border:1px solid transparent;background:transparent;color:var(--muted);padding:8px 12px;border-radius:9px;font-size:13px}
+.tab.active{background:#1c3048;color:var(--cyan);border-color:#35536c}
+.tab-panel{display:none;animation:fadeIn .3s ease}.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.code{position:relative;background:#070f1a;border:1px solid #293d55;border-radius:13px;padding:17px;overflow:auto;color:#c7e1f8;font:12px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre}
+.copy{position:absolute;right:10px;top:10px;z-index:1}
+.code-wrap{position:relative}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:12px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--cyan);background:#122238}
+tr:hover td{background:#14243a}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+details{border:1px solid var(--line);border-radius:12px;background:#101d30;margin:9px 0}
+summary{cursor:pointer;padding:14px 16px;font-weight:700}
+details .details-body{padding:0 16px 16px;color:var(--muted)}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.timeline-item{border-top:2px solid #38556f;padding:13px 4px 0;position:relative}.timeline-item:before{content:"";position:absolute;top:-6px;left:0;width:10px;height:10px;background:var(--cyan);border-radius:50%;box-shadow:0 0 0 4px #5ee7f51a}
+.timeline-item strong{display:block;margin:8px 0 4px}
+.metric{font-size:30px;font-weight:850;letter-spacing:-.04em;color:var(--cyan)}
+.input-row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.field{display:flex;flex-direction:column;gap:5px;min-width:150px;flex:1}.field label{font-size:12px;color:var(--muted)}.field input,.field select{width:100%;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:#091625;color:var(--text)}
+.config-preview{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}
+.config-preview .code{min-height:150px}
+.status-pill{display:inline-block;border-radius:99px;padding:4px 9px;background:#302615;color:var(--amber);font-size:11px;font-weight:800}
+.status-pill.good{background:#123529;color:var(--green)}.status-pill.bad{background:#3b1b27;color:var(--red)}
+.footer{border-top:1px solid var(--line);padding:30px clamp(18px,5vw,70px);color:var(--muted);font-size:12px}
+.backtop{position:fixed;right:18px;bottom:18px;z-index:10;opacity:0;pointer-events:none;transition:.2s}.backtop.show{opacity:1;pointer-events:auto}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.sidebar{position:relative;top:auto;max-height:none;display:flex;gap:4px;overflow:auto;white-space:nowrap}.sidebar h3{display:none}.navlink{flex-shrink:0}.architecture{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:24px}.arch-col{gap:8px}.hero-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.hero{padding-top:46px}.grid.two,.grid.three,.timeline,.config-preview{grid-template-columns:1fr}.topbar{align-items:flex-start}.top-actions .btn span{display:none}.hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:16px}.section-head{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">H</div><div>GitOps Field Guide <span class="tag cyan">Interactive</span></div></div>
+  <div class="top-actions">
+    <button class="btn ghost" id="motionToggle" title="Toggle animation">◌ <span>Motion: On</span></button>
+    <button class="btn" id="themeToggle" title="Toggle theme">◐ <span>Theme</span></button>
+    <button class="btn primary" onclick="window.print()">⇩ <span>Print / Save PDF</span></button>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="eyebrow"><span class="pulse"></span> Harness · Argo CD · GitOps</div>
+  <h1>From a <span class="gradient-text">Pull Request</span><br>to a running environment.</h1>
+  <p>An interactive technical guide to Harness GitOps PR Pipelines, Argo CD ApplicationSets, Git generators, and Datadog Continuous Verification—with a practical mapping to OpenChoreo Project 702.</p>
+  <div class="hero-actions">
+    <a class="btn primary" href="#architecture">Explore architecture ↓</a>
+    <a class="btn" href="#simulator">Run workflow simulator ▶</a>
+    <a class="btn" href="#openchoreo">OpenChoreo mapping ↗</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><strong>01</strong><span>PR as review gate</span></div>
+    <div class="stat"><strong>02</strong><span>ApplicationSet generates Apps</span></div>
+    <div class="stat"><strong>03</strong><span>GitOps reconciles desired state</span></div>
+    <div class="stat"><strong>04</strong><span>CV checks monitored signals</span></div>
+  </div>
+</section>
+
+<div class="layout">
+  <aside class="sidebar">
+    <h3>Navigate guide</h3>
+    <a class="navlink active" href="#overview">◈ Overview</a>
+    <a class="navlink" href="#architecture">⌘ Architecture</a>
+    <a class="navlink" href="#appset">▦ ApplicationSet</a>
+    <a class="navlink" href="#git-generator">⌕ Git generator</a>
+    <a class="navlink" href="#pipeline">⇄ PR pipeline</a>
+    <a class="navlink" href="#simulator">▶ Simulator</a>
+    <a class="navlink" href="#cv">♥ Continuous Verification</a>
+    <a class="navlink" href="#yaml">⌘ YAML walkthrough</a>
+    <a class="navlink" href="#comparison">⇆ Plural comparison</a>
+    <a class="navlink" href="#openchoreo">◇ OpenChoreo Project 702</a>
+    <a class="navlink" href="#references">↗ References</a>
+  </aside>
+
+  <main class="content">
+    <section id="overview" class="reveal">
+      <div class="section-head"><div><div class="kicker">01 / Overview</div><h2>The delivery loop at a glance</h2><p class="lead">Harness coordinates the steps. Git stores the proposed desired state. ApplicationSet can generate Argo CD Applications from matching repository configuration. Argo CD reconciles them.</p></div><span class="tag green">Git-first workflow</span></div>
+      <div class="grid three">
+        <article class="card"><div class="icon">⌁</div><h3>Propose</h3><p class="muted">Update Release Repo writes or updates configuration and opens a pull request for review.</p><span class="tag cyan">Git change</span></article>
+        <article class="card"><div class="icon">◈</div><h3>Reconcile</h3><p class="muted">After merge, ApplicationSet and Argo CD process the desired state through their respective reconciliation loops.</p><span class="tag violet">GitOps</span></article>
+        <article class="card"><div class="icon">♥</div><h3>Verify</h3><p class="muted">An optional Verify step evaluates configured telemetry, such as Kubernetes replica metrics in Datadog.</p><span class="tag green">Health signal</span></article>
+      </div>
+      <div class="callout"><strong>Keep these outcomes separate:</strong> PR merged ≠ ApplicationSet reconciled ≠ Argo CD sync succeeded ≠ application healthy.</div>
+    </section>
+
+    <section id="architecture" class="reveal">
+      <div class="section-head"><div><div class="kicker">02 / Interactive architecture</div><h2>Click any component to inspect it</h2><p class="lead">Use the controls to animate the complete flow or focus on a layer. Component details appear below the diagram.</p></div></div>
+      <div class="card arch-shell">
+        <div class="arch-toolbar">
+          <div class="group">
+            <button class="btn small primary" id="playArch">▶ Animate flow</button>
+            <button class="btn small" id="resetArch">↺ Reset</button>
+          </div>
+          <div class="group">
+            <button class="btn small filter-btn" data-filter="all">All layers</button>
+            <button class="btn small filter-btn" data-filter="git">Git / PR</button>
+            <button class="btn small filter-btn" data-filter="argo">Argo CD</button>
+            <button class="btn small filter-btn" data-filter="health">Health</button>
+          </div>
+        </div>
+        <div class="architecture" id="architectureDiagram">
+          <div class="arch-col">
+            <button class="node" data-id="developer" data-layer="git"><span class="node-icon">👩‍💻</span><strong>Developer / Request</strong><small>Requests a new environment or configuration change.</small></button>
+            <button class="node" data-id="harness" data-layer="git"><span class="node-icon">🧩</span><strong>Harness PR Pipeline</strong><small>Orchestrates repository update, PR gate, sync, and follow-up steps.</small></button>
+            <button class="node" data-id="release" data-layer="git"><span class="node-icon">📝</span><strong>Update Release Repo</strong><small>Creates or updates environment configuration and opens a PR.</small></button>
+          </div>
+          <div class="arrow"><span>⟶</span></div>
+          <div class="arch-col">
+            <button class="node" data-id="pr" data-layer="git"><span class="node-icon">🔎</span><strong>Pull Request</strong><small>Review, required checks, approval, and merge.</small></button>
+            <button class="node" data-id="repo" data-layer="git"><span class="node-icon">📦</span><strong>GitOps Repository</strong><small>Stores merged desired-state configuration.</small></button>
+            <button class="node" data-id="generator" data-layer="argo"><span class="node-icon">⚙️</span><strong>ApplicationSet Git Generator</strong><small>Finds matching files and provides template parameters.</small></button>
+          </div>
+          <div class="arrow"><span>⟶</span></div>
+          <div class="arch-col">
+            <button class="node" data-id="appset" data-layer="argo"><span class="node-icon">🧬</span><strong>ApplicationSet Template</strong><small>Generates one or more Argo CD Application resources.</small></button>
+            <button class="node" data-id="sync" data-layer="argo"><span class="node-icon">🔄</span><strong>Argo CD Sync</strong><small>Reconciles managed resources with the desired state.</small></button>
+            <button class="node" data-id="health" data-layer="health"><span class="node-icon">📈</span><strong>Verify / Datadog</strong><small>Optional post-sync metric analysis.</small></button>
+          </div>
+        </div>
+        <div class="node-detail" id="nodeDetail"><h3>Start with a component</h3><p class="muted">Select any node above. The detail panel explains its role and what it does not guarantee.</p></div>
+        <div class="callout warn"><strong>Architecture note:</strong> ApplicationSet is an Argo CD feature. It is not automatically part of a Flux-based OpenChoreo implementation.</div>
+      </div>
+    </section>
+
+    <section id="appset" class="reveal">
+      <div class="section-head"><div><div class="kicker">03 / ApplicationSet</div><h2>One template, multiple Applications</h2><p class="lead">ApplicationSet uses a generator to provide parameters and a template to define generated Argo CD Applications.</p></div></div>
+      <div class="grid two">
+        <div class="card"><div class="icon">🧬</div><h3>ApplicationSet</h3><p class="muted">Defines how Applications should be generated. It is a higher-level resource, not the application workload itself.</p><div class="callout">Generator + template → Application resources</div></div>
+        <div class="card"><div class="icon">🔄</div><h3>Argo CD Application</h3><p class="muted">Represents an application Argo CD manages. Argo CD compares desired state with actual state and synchronizes resources.</p><div class="callout good">Generated Application → managed resources</div></div>
+      </div>
+      <h3 style="margin-top:20px">Environment fan-out</h3>
+      <div class="card">
+        <div class="pipeline">
+          <div class="pipe-step completed"><div class="num">G</div><strong>Git configuration</strong><small>dev, staging, prod</small></div>
+          <div class="pipe-step completed"><div class="num">1</div><strong>Git generator</strong><small>Find matching entries</small></div>
+          <div class="pipe-step completed"><div class="num">2</div><strong>Template</strong><small>Apply common definition</small></div>
+          <div class="pipe-step completed"><div class="num">3</div><strong>Generated Apps</strong><small>One per matching entry</small></div>
+          <div class="pipe-step completed"><div class="num">4</div><strong>Argo CD</strong><small>Reconcile each Application</small></div>
+        </div>
+        <p class="smalltext">This is a conceptual flow. The actual number and names of Applications depend on the generator and template configuration.</p>
+      </div>
+    </section>
+
+    <section id="git-generator" class="reveal">
+      <div class="section-head"><div><div class="kicker">04 / Git generator</div><h2>Configuration in Git drives Application creation</h2><p class="lead">The file-oriented Git generator can read matching configuration files such as <code>config.json</code> and expose their data to an ApplicationSet template.</p></div></div>
+      <div class="card">
+        <div class="tabs" data-tabs="generatorTabs">
+          <button class="tab active" data-tab="repoTab">Repository layout</button>
+          <button class="tab" data-tab="jsonTab">Example config.json</button>
+          <button class="tab" data-tab="flowTab">How parameters flow</button>
+        </div>
+        <div class="tab-panel active" id="repoTab">
+          <div class="code-wrap"><button class="btn small copy" data-copy="repoCode">Copy</button><pre class="code" id="repoCode">gitops-config/
+└── environments/
+    ├── development/
+    │   └── config.json
+    ├── staging/
+    │   └── config.json
+    └── production/
+        └── config.json</pre></div>
+          <p class="muted">Each configuration file describes environment-specific values. The configured generator must match the intended paths.</p>
+        </div>
+        <div class="tab-panel" id="jsonTab">
+          <div class="code-wrap"><button class="btn small copy" data-copy="jsonCode">Copy</button><pre class="code" id="jsonCode">{
+  "environment": "development",
+  "replicaCount": 1,
+  "region": "development"
+}</pre></div>
+          <p class="muted">Illustrative values only. The schema and how fields are consumed depend on the ApplicationSet template and target application configuration.</p>
+        </div>
+        <div class="tab-panel" id="flowTab">
+          <div class="timeline">
+            <div class="timeline-item"><strong>Discover</strong><span class="muted">Git generator scans configured paths.</span></div>
+            <div class="timeline-item"><strong>Extract</strong><span class="muted">Matching file data becomes template parameters.</span></div>
+            <div class="timeline-item"><strong>Render</strong><span class="muted">ApplicationSet template uses the parameters.</span></div>
+            <div class="timeline-item"><strong>Reconcile</strong><span class="muted">Generated Applications are managed by Argo CD.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid three" style="margin-top:14px">
+        <div class="card"><h3>Consistency</h3><p class="muted">Reuse a common template across environments.</p></div>
+        <div class="card"><h3>Auditability</h3><p class="muted">Git history captures changes and authorship.</p></div>
+        <div class="card"><h3>Scale</h3><p class="muted">Add matching configuration instead of hand-authoring each Application.</p></div>
+      </div>
+    </section>
+
+    <section id="pipeline" class="reveal">
+      <div class="section-head"><div><div class="kicker">05 / PR pipeline</div><h2>The four key activities</h2><p class="lead">Harness coordinates the change lifecycle. The precise steps depend on whether the pipeline waits for a provider-side merge or uses explicit Harness approval and merge steps.</p></div></div>
+      <div class="card">
+        <div class="pipeline">
+          <div class="pipe-step"><div class="num">01</div><strong>Update Release Repo</strong><small>Create/update configuration and open PR.</small></div>
+          <div class="pipe-step"><div class="num">02</div><strong>Review & merge</strong><small>PR provider review is the gate in the wait-for-merge pattern.</small></div>
+          <div class="pipe-step"><div class="num">03</div><strong>GitOps Sync</strong><small>Synchronize configured application(s).</small></div>
+          <div class="pipe-step"><div class="num">04</div><strong>Fetch Linked Apps</strong><small>Retrieve the application linked to the workflow.</small></div>
+        </div>
+      </div>
+      <div class="grid two" style="margin-top:14px">
+        <div class="card"><span class="tag cyan">Pattern A</span><h3 style="margin-top:10px">Wait for PR merge</h3><p class="muted">Enable <strong>Wait for PR merge</strong> on Update Release Repo. The provider's review and merge process gates the next steps.</p><div class="code">Update Release Repo (wait)
+          ↓
+Git provider review + merge
+          ↓
+GitOps Sync
+          ↓
+Fetch Linked Apps</div></div>
+        <div class="card"><span class="tag violet">Pattern B</span><h3 style="margin-top:10px">Explicit Harness approval</h3><p class="muted">The supplied YAML example uses a Harness Approval step and a separate Merge PR step.</p><div class="code">Update Release Repo
+          ↓
+Harness Approval
+          ↓
+Merge PR
+          ↓
+GitOps Sync
+          ↓
+Verify</div></div>
+      </div>
+      <div class="callout warn">Do not accidentally combine both patterns without checking the intended control flow. They represent different ways to gate the pipeline.</div>
+    </section>
+
+    <section id="simulator" class="reveal">
+      <div class="section-head"><div><div class="kicker">06 / Interactive simulator</div><h2>Run a simulated PR-to-environment workflow</h2><p class="lead">Change the environment inputs and run the sequence. This is a front-end learning simulation; it does not connect to Harness, GitHub, Kubernetes, Argo CD, or Datadog.</p></div></div>
+      <div class="card">
+        <div class="input-row">
+          <div class="field"><label for="envName">Environment name</label><input id="envName" value="test-east" maxlength="30" /></div>
+          <div class="field"><label for="replicas">Replica count</label><select id="replicas"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option></select></div>
+          <div class="field"><label for="region">Region</label><select id="region"><option>development</option><option>staging</option><option selected>east</option><option>west</option><option>production</option></select></div>
+          <button class="btn primary" id="runSimulation">▶ Run simulation</button>
+        </div>
+        <div class="progress"><div class="progress-bar" id="simProgress"></div></div>
+        <div class="pipeline" id="simSteps">
+          <div class="pipe-step"><div class="num">1</div><strong>Validate inputs</strong><small>Check configuration</small></div>
+          <div class="pipe-step"><div class="num">2</div><strong>Open PR</strong><small>Propose Git change</small></div>
+          <div class="pipe-step"><div class="num">3</div><strong>Review & merge</strong><small>Approval gate</small></div>
+          <div class="pipe-step"><div class="num">4</div><strong>ApplicationSet</strong><small>Generate Application</small></div>
+          <div class="pipe-step"><div class="num">5</div><strong>GitOps sync</strong><small>Reconcile resources</small></div>
+          <div class="pipe-step"><div class="num">6</div><strong>Verify</strong><small>Inspect health signal</small></div>
+        </div>
+        <div class="grid two">
+          <div><h3>Execution log</h3><div class="log" id="simLog" aria-live="polite">[ready] Configure an environment, then click “Run simulation”.</div></div>
+          <div><h3>Generated configuration preview</h3><div class="code-wrap"><button class="btn small copy" data-copy="generatedConfig">Copy</button><pre class="code" id="generatedConfig">{
+  "environment": "test-east",
+  "replicaCount": 2,
+  "region": "east"
+}</pre></div><p id="simStatus"><span class="status-pill">Not run</span></p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cv" class="reveal">
+      <div class="section-head"><div><div class="kicker">07 / Continuous Verification</div><h2>Sync success is not health success</h2><p class="lead">The supplied example adds a Verify step and configures Datadog as a health source to inspect a Kubernetes replica metric.</p></div></div>
+      <div class="grid two">
+        <div class="card"><div class="icon">🔄</div><h3>GitOps synchronization</h3><p class="muted">Checks whether desired configuration is synchronized through the configured GitOps workflow.</p><span class="tag cyan">Desired state</span></div>
+        <div class="card"><div class="icon">📈</div><h3>Continuous Verification</h3><p class="muted">Analyzes monitored telemetry to help assess whether the deployment is behaving as expected.</p><span class="tag green">Observed signals</span></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h3>Example Datadog query</h3>
+        <p class="muted">The source material lists <code>kubernetes_state.deployment.replicas_available</code> as an example metric, but its manual query uses a different metric name. Confirm the intended metric in your Datadog account.</p>
+        <div class="code-wrap"><button class="btn small copy" data-copy="ddQuery">Copy</button><pre class="code" id="ddQuery">avg:kubernetes_state.deployment.replicas{kube_app_instance:gitops-sample-application}</pre></div>
+        <p>Example tag:</p><div class="code">kube_app_instance:gitops-sample-application</div>
+        <p>Example Service Instance Identifier (SII):</p><div class="code">kube_app_instance</div>
+      </div>
+      <div class="callout warn"><strong>Interpret carefully:</strong> Replica availability alone does not prove application correctness. Use metrics that match the application's reliability objectives and verify the exact Datadog query and tags before production use.</div>
+      <details><summary>Example Verify settings in the supplied YAML</summary><div class="details-body">
+        <ul><li>Duration: <code>10m</code></li><li>Sensitivity: <code>HIGH</code></li><li>Baseline: <code>LAST</code></li><li><code>failOnNoAnalysis: true</code></li><li>Manual intervention for verification failures and unknown errors.</li></ul>
+        These are example settings, not universal recommendations.
+      </div></details>
+    </section>
+
+    <section id="yaml" class="reveal">
+      <div class="section-head"><div><div class="kicker">08 / YAML walkthrough</div><h2>Understand the sample pipeline sequence</h2><p class="lead">The supplied YAML demonstrates a pipeline with an update step, explicit approval, PR merge, GitOps synchronization, and verification.</p></div></div>
+      <div class="card">
+        <div class="tabs" data-tabs="yamlTabs">
+          <button class="tab active" data-tab="yamlFlow">Sequence</button>
+          <button class="tab" data-tab="yamlSync">GitOps Sync fields</button>
+          <button class="tab" data-tab="yamlVerify">Verify settings</button>
+          <button class="tab" data-tab="yamlSnippet">Compact snippet</button>
+        </div>
+        <div class="tab-panel active" id="yamlFlow">
+          <div class="timeline">
+            <div class="timeline-item"><strong>Update Release Repo</strong><span class="muted">Uses <code>replicaCount</code> input and PR title.</span></div>
+            <div class="timeline-item"><strong>Harness Approval</strong><span class="muted">Example: minimum one approver, one-day timeout.</span></div>
+            <div class="timeline-item"><strong>Merge PR</strong><span class="muted">Configured to delete source branch after merge.</span></div>
+            <div class="timeline-item"><strong>GitOps Sync + Verify</strong><span class="muted">Sync configured app, then analyze verification signal.</span></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="yamlSync">
+          <div class="code">applicationsList:
+  - applicationName: gitops-sample-application
+    agentId: gitopspragent
+
+prune: false
+dryRun: false
+applyOnly: false
+forceApply: false
+retry: false
+timeout: 10m</div>
+          <p class="muted">These values come from the supplied example. Evaluate pruning, retries, force apply, and timeout behavior for your environment.</p>
+        </div>
+        <div class="tab-panel" id="yamlVerify">
+          <div class="code">type: Verify
+spec:
+  sensitivity: HIGH
+  duration: 10m
+  baseline: LAST
+  failOnNoAnalysis: true</div>
+          <p class="muted">The supplied YAML excerpt does not include the complete Datadog health-source/query configuration.</p>
+        </div>
+        <div class="tab-panel" id="yamlSnippet">
+          <div class="code-wrap"><button class="btn small copy" data-copy="yamlCode">Copy</button><pre class="code" id="yamlCode">steps:
+  - type: GitOpsUpdateReleaseRepo
+    name: Update Release Repo
+
+  - type: HarnessApproval
+    name: Approval before merging PR
+
+  - type: MergePR
+    name: Merge PR
+
+  - type: GitOpsSync
+    name: Synchronize application
+
+  - type: Verify
+    name: Verify replicas</pre></div>
+          <p class="smalltext">This is a compact conceptual excerpt for learning, not a complete deployable Harness pipeline YAML.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="reveal">
+      <div class="section-head"><div><div class="kicker">09 / Tool comparison</div><h2>Plural PR Automation vs Harness</h2><p class="lead">Compare the architectural emphasis of the examples previously studied.</p></div></div>
+      <div class="card table-wrap" style="padding:0">
+        <table>
+          <thead><tr><th>Capability</th><th>Plural PR Automation</th><th>Harness PR Pipeline</th></tr></thead>
+          <tbody>
+            <tr><td>Primary abstraction</td><td><code>PrAutomation</code> resource and templates</td><td>Pipeline and configured steps</td></tr>
+            <tr><td>Developer inputs</td><td>Inputs defined by PR automation</td><td>Pipeline inputs and release configuration</td></tr>
+            <tr><td>File generation</td><td>Liquid templates and create/update definitions</td><td>Update Release Repo and repository configuration</td></tr>
+            <tr><td>PR creation</td><td>SCM connection and PR automation</td><td>Update Release Repo step</td></tr>
+            <tr><td>Approval</td><td>PR review and related governance workflows</td><td>Provider-side merge gate or explicit Harness approval/merge</td></tr>
+            <tr><td>Dynamic Argo CD Apps</td><td>Not central to the reviewed example</td><td>ApplicationSet with Git generator</td></tr>
+            <tr><td>Post-deployment verification</td><td>Depends on configured workflow and integrations</td><td>Verify step with health source such as Datadog</td></tr>
+            <tr><td>Main emphasis</td><td>Reusable self-service PR automations</td><td>Orchestrated release workflow and optional verification</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="smalltext">This is a comparison of the reviewed examples, not a comprehensive product, licensing, or feature comparison.</p>
+    </section>
+
+    <section id="openchoreo" class="reveal">
+      <div class="section-head"><div><div class="kicker">10 / WSO2 Project 702</div><h2>Map the pattern to OpenChoreo</h2><p class="lead">Project 702 proposes PR-driven self-service GitOps using Backstage, <code>occ</code>, GitHub, Flux, and OpenChoreo controllers.</p></div></div>
+      <div class="card">
+        <div class="tag green">Suggested conceptual architecture</div>
+        <div class="pipeline" style="margin-top:15px">
+          <div class="pipe-step"><div class="num">1</div><strong>Backstage</strong><small>Developer inputs / scaffolder</small></div>
+          <div class="pipe-step"><div class="num">2</div><strong>occ</strong><small>Generate OpenChoreo manifests</small></div>
+          <div class="pipe-step"><div class="num">3</div><strong>GitHub PR</strong><small>Review and merge</small></div>
+          <div class="pipe-step"><div class="num">4</div><strong>Flux</strong><small>Reconcile Git desired state</small></div>
+          <div class="pipe-step"><div class="num">5</div><strong>OpenChoreo</strong><small>Controllers reconcile resources</small></div>
+          <div class="pipe-step"><div class="num">6</div><strong>Portal status</strong><small>Report progress and outcome</small></div>
+        </div>
+      </div>
+      <div class="grid two" style="margin-top:14px">
+        <div class="card"><h3>Useful ideas to reuse</h3><ul class="muted"><li>PR as an approval boundary.</li><li>Separate merge from reconciliation.</li><li>Track which resource a PR affects.</li><li>Show pending changes and synchronization status.</li><li>Consider health verification after the core loop works.</li></ul></div>
+        <div class="card"><h3>Do not copy blindly</h3><ul class="muted"><li>ApplicationSet is Argo CD-specific; Project 702 initially focuses on Flux.</li><li>Harness pipeline steps are not Backstage actions.</li><li>Do not bypass GitOps reconciliation with direct deployment calls.</li><li>Do not treat metrics as a substitute for resource status.</li><li>Detect conflicts and surface them instead of silently resolving them.</li></ul></div>
+      </div>
+      <div class="callout"><strong>Recommended first milestone:</strong> Backstage action → `occ` generation → GitHub PR → merge → Flux reconciliation → observable OpenChoreo resource status. Add runtime health verification only when the core loop is reliable.</div>
+      <h3 style="margin-top:20px">Interactive resource mapping</h3>
+      <div class="card">
+        <div class="input-row">
+          <div class="field"><label for="resourceType">Example OpenChoreo resource</label><select id="resourceType"><option>ReleaseBinding</option><option>Workload</option><option>ComponentRelease</option><option>Create component</option></select></div>
+          <div class="field"><label for="repoLayout">Repository layout</label><select id="repoLayout"><option>sample-gitops default</option><option>Custom configured layout</option></select></div>
+          <button class="btn primary" id="mapResource">Update mapping</button>
+        </div>
+        <div id="mappingOutput" class="node-detail"><h3>ReleaseBinding</h3><p class="muted">A PR action can render the resource with <code>occ</code>, resolve its configured destination path, create a GitHub PR, and later associate the merged change with reconciliation status.</p></div>
+      </div>
+    </section>
+
+    <section id="implementation" class="reveal">
+      <div class="section-head"><div><div class="kicker">11 / Implementation checklist</div><h2>Questions to resolve before implementation</h2></div></div>
+      <div class="card">
+        <details open><summary>Harness and ApplicationSet</summary><div class="details-body"><ul><li>Does the Git generator match the intended config paths?</li><li>Does the template generate valid Applications?</li><li>Is the flow waiting for PR merge or using explicit approval and merge steps?</li><li>How is the newly generated Application discovered?</li><li>Which metric and tags are available in Datadog?</li></ul></div></details>
+        <details><summary>OpenChoreo Project 702</summary><div class="details-body"><ul><li>Which resource types should the first PR action support?</li><li>How will <code>occ</code> support configurable repository layouts?</li><li>How will the action detect conflicting open PRs?</li><li>How will the portal track merged-but-not-yet-synced changes?</li><li>Which source is authoritative for reconciliation status: GitHub, Flux, or OpenChoreo resource conditions?</li><li>Should runtime verification be part of the initial scope or a later extension?</li></ul></div></details>
+      </div>
+    </section>
+
+    <section id="references" class="reveal">
+      <div class="section-head"><div><div class="kicker">12 / References</div><h2>Official documentation</h2><p class="lead">Use these links to validate product-specific details and check version-specific behavior.</p></div></div>
+      <div class="grid two">
+        <div class="card"><h3>Harness & Argo CD</h3>
+          <p><a href="https://developer.harness.io/continuous-delivery" target="_blank" rel="noreferrer">Harness Continuous Delivery ↗</a></p>
+          <p><a href="https://developer.harness.io/continuous-delivery/use-gitops/pr-pipelines/pr-pipeline-application-set" target="_blank" rel="noreferrer">ApplicationSet PR Pipeline guide ↗</a></p>
+          <p><a href="https://developer.harness.io/continuous-delivery/use-gitops/applicationsets/appset-basics" target="_blank" rel="noreferrer">ApplicationSet basics ↗</a></p>
+          <p><a href="https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators/" target="_blank" rel="noreferrer">Argo CD generator reference ↗</a></p>
+          <p><a href="https://developer.harness.io/continuous-delivery/use-gitops/pr-pipelines/pr-pipelines-basics" target="_blank" rel="noreferrer">Harness PR pipeline basics ↗</a></p>
+          <p><a href="https://developer.harness.io/docs/continuous-delivery/verify/configure-cv/health-sources/datadog" target="_blank" rel="noreferrer">Harness Datadog health source ↗</a></p>
+        </div>
+        <div class="card"><h3>Samples & OpenChoreo</h3>
+          <p><a href="https://github.com/harness-community/Gitops-Samples" target="_blank" rel="noreferrer">Harness Community GitOps Samples ↗</a></p>
+          <p><a href="https://github.com/harness-community/Gitops-Samples/blob/main/PR-Pipeline-CV/pipeline.yaml" target="_blank" rel="noreferrer">Sample PR Pipeline with CV YAML ↗</a></p>
+          <p><a href="https://openchoreo.dev/" target="_blank" rel="noreferrer">OpenChoreo ↗</a></p>
+          <p><a href="https://openchoreo.dev/docs/platform-engineer-guide/gitops/overview/" target="_blank" rel="noreferrer">OpenChoreo GitOps overview ↗</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="reveal">
+      <div class="card" style="text-align:center;padding:30px">
+        <div class="eyebrow">Key takeaway</div>
+        <h2 style="margin-top:15px">A successful merge is only one milestone.</h2>
+        <p class="lead" style="margin:0 auto">A dependable platform tracks the whole journey: request → PR → merge → reconciliation → resource status → optional health verification.</p>
+        <a href="#top" class="btn primary" style="margin-top:20px">↑ Back to top</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="footer">
+  <strong>Harness GitOps PR Pipelines — Interactive Architecture Guide</strong><br>
+  Built as a self-contained learning page. Architecture diagrams, tabs, copy controls, workflow simulation, filters, and theme controls run locally in your browser.<br>
+  The simulator is illustrative only and does not connect to any external platform.
+</footer>
+<button class="btn primary backtop" id="backTop" aria-label="Back to top">↑</button>
+<script>
+const nodeInfo={
+ developer:{title:"Developer / Request",text:"The developer expresses an intent, such as creating a new environment or changing configuration. In a portal-driven workflow, this intent is collected through a form and validated before any repository change is created.",caution:"A request is not a deployment; it starts the change lifecycle."},
+ harness:{title:"Harness PR Pipeline",text:"Harness orchestrates the configured sequence: update release repository, wait for PR merge or use explicit approval/merge steps, synchronize the relevant GitOps application, and optionally verify health.",caution:"The exact sequence depends on pipeline configuration."},
+ release:{title:"Update Release Repo",text:"This step creates or updates configuration in the release repository and opens a pull request. The environment configuration is proposed as a Git change.",caution:"Opening a PR does not mean the environment exists yet."},
+ pr:{title:"Pull Request",text:"The PR is the review and governance boundary. Required reviewers, branch protection, and status checks can be enforced by the Git provider.",caution:"A merged PR confirms repository change, not application health."},
+ repo:{title:"GitOps Repository",text:"The merged repository stores the desired state. GitOps controllers use repository content as the source of truth for reconciliation.",caution:"Ensure the controller watches the intended repository, revision, and paths."},
+ generator:{title:"ApplicationSet Git Generator",text:"The Git generator discovers configured repository paths or files and provides parameters to the ApplicationSet template. The supplied example focuses on config.json files.",caution:"A file must match the configured generator paths and data format."},
+ appset:{title:"ApplicationSet Template",text:"The ApplicationSet template uses generator parameters to generate Argo CD Application resources. A new matching configuration may result in another Application during reconciliation.",caution:"ApplicationSet creates Application resources; it does not itself prove the workload is healthy."},
+ sync:{title:"Argo CD Sync",text:"Argo CD compares desired state with actual state and synchronizes the resources managed by an Application. Harness can coordinate a GitOps Sync step in its pipeline.",caution:"ApplicationSet reconciliation and Application synchronization are separate operations."},
+ health:{title:"Verify / Datadog",text:"An optional Verify step analyzes metrics from a configured health source. The supplied example uses Datadog and a Kubernetes replica metric.",caution:"Replica metrics alone do not prove end-to-end application correctness."}
+};
+const nodes=[...document.querySelectorAll(".node")];
+function showNode(id){const n=nodeInfo[id];if(!n)return;nodes.forEach(x=>x.classList.toggle("selected",x.dataset.id===id));document.getElementById("nodeDetail").innerHTML=`<h3>${n.title}</h3><p>${n.text}</p><div class="smalltext">Consideration: ${n.caution}</div>`}
+nodes.forEach(n=>n.addEventListener("click",()=>showNode(n.dataset.id)));
+let archTimer=null;
+const archOrder=["developer","harness","release","pr","repo","generator","appset","sync","health"];
+document.getElementById("playArch").addEventListener("click",()=>{
+ if(archTimer){clearInterval(archTimer);archTimer=null}
+ nodes.forEach(n=>n.classList.remove("active-step","done"));
+ let i=0;document.getElementById("playArch").textContent="Ⅱ Playing…";
+ archTimer=setInterval(()=>{nodes.forEach(n=>{if(archOrder.indexOf(n.dataset.id)<i)n.classList.add("done");n.classList.toggle("active-step",n.dataset.id===archOrder[i])});if(i<archOrder.length){showNode(archOrder[i]);i++}else{clearInterval(archTimer);archTimer=null;document.getElementById("playArch").textContent="▶ Replay flow";nodes.forEach(n=>n.classList.remove("active-step"))}},850);
+});
+document.getElementById("resetArch").addEventListener("click",()=>{if(archTimer)clearInterval(archTimer);archTimer=null;nodes.forEach(n=>n.classList.remove("active-step","done","selected"));document.getElementById("nodeDetail").innerHTML="<h3>Start with a component</h3><p class=\"muted\">Select any node above. The detail panel explains its role and what it does not guarantee.</p>";document.getElementById("playArch").textContent="▶ Animate flow"});
+document.querySelectorAll(".filter-btn").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("primary"));btn.classList.add("primary");nodes.forEach(n=>{n.style.opacity=btn.dataset.filter==="all"||n.dataset.layer===btn.dataset.filter?"1":".18";n.style.filter=btn.dataset.filter==="all"||n.dataset.layer===btn.dataset.filter?"none":"grayscale(1)"});}));
+document.querySelectorAll("[data-tabs]").forEach(group=>{const tabs=group.querySelectorAll(".tab");tabs.forEach(tab=>tab.addEventListener("click",()=>{tabs.forEach(t=>t.classList.toggle("active",t===tab));const parent=group.parentElement;parent.querySelectorAll(".tab-panel").forEach(panel=>panel.classList.toggle("active",panel.id===tab.dataset.tab))}))});
+document.querySelectorAll(".copy").forEach(btn=>btn.addEventListener("click",async()=>{const el=document.getElementById(btn.dataset.copy);if(!el)return;try{await navigator.clipboard.writeText(el.innerText);btn.textContent="Copied ✓";setTimeout(()=>btn.textContent="Copy",1200)}catch(e){const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);btn.textContent="Select text";}}));
+const simSteps=[...document.querySelectorAll("#simSteps .pipe-step")];let simRunning=false;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+document.getElementById("runSimulation").addEventListener("click",async()=>{
+ if(simRunning)return;simRunning=true;
+ const raw=document.getElementById("envName").value.trim();const env=raw.toLowerCase().replace(/[^a-z0-9-]/g,"-").replace(/-+/g,"-").replace(/^-|-$/g,"");
+ const replicas=Number(document.getElementById("replicas").value);const region=document.getElementById("region").value;
+ const log=document.getElementById("simLog"),status=document.getElementById("simStatus"),progress=document.getElementById("simProgress"),run=document.getElementById("runSimulation");
+ run.disabled=true;run.textContent="Running…";simSteps.forEach(s=>s.classList.remove("current","completed"));progress.style.width="0%";log.innerHTML="";
+ if(!env){log.innerHTML='<span class="warn">[error] Enter a valid environment name containing letters or numbers.</span>';status.innerHTML='<span class="status-pill bad">Input invalid</span>';run.disabled=false;run.textContent="▶ Run simulation";simRunning=false;return}
+ const config={environment:env,replicaCount:replicas,region};
+ document.getElementById("generatedConfig").textContent=JSON.stringify(config,null,2);
+ const actions=[
+  ["Validate inputs",`Validated environment "${env}" and replicaCount=${replicas}.`],
+  ["Open PR",`Created simulated PR: Add ${env} environment configuration.`],
+  ["Review & merge",`Simulated review passed and PR merged to the GitOps repository.`],
+  ["ApplicationSet",`Git generator discovered environments/${env}/config.json; template generated an Application (simulated).`],
+  ["GitOps sync",`Simulated Argo CD sync requested for ${env}.`],
+  ["Verify",`Simulated verification check completed for ${replicas} desired replicas; real telemetry was not queried.`]
+ ];
+ log.innerHTML='<span class="info">[start] Simulation only — no external systems are contacted.</span>';
+ for(let i=0;i<actions.length;i++){
+   simSteps.forEach((s,j)=>{s.classList.toggle("current",j===i);if(j<i)s.classList.add("completed")});
+   log.innerHTML+=`\n<span class="info">[${String(i+1).padStart(2,"0")}/06] ${actions[i][0]}</span>\n<span class="ok">  ✓ ${actions[i][1]}</span>`;
+   log.scrollTop=log.scrollHeight;progress.style.width=((i+1)/actions.length*100)+"%";await sleep(650);
+   simSteps[i].classList.remove("current");simSteps[i].classList.add("completed");
+ }
+ log.innerHTML+='\n<span class="ok">[done] Simulated workflow completed. In a real system, verify controller status and actual application telemetry.</span>';
+ status.innerHTML='<span class="status-pill good">Simulation complete</span> <span class="smalltext">Illustrative only</span>';
+ run.disabled=false;run.textContent="↻ Run again";simRunning=false;
+});
+document.getElementById("mapResource").addEventListener("click",()=>{
+ const type=document.getElementById("resourceType").value,layout=document.getElementById("repoLayout").value;
+ const path=layout==="sample-gitops default"?"Use the sample-gitops default path pattern.":"Resolve the destination path using the configured repository layout pattern.";
+ document.getElementById("mappingOutput").innerHTML=`<h3>${type}</h3><p>Backstage collects the developer's intent, then <code>occ</code> generates the OpenChoreo-aware manifest for <strong>${type}</strong>. ${path} The action checks for conflicting in-flight changes before opening a GitHub PR.</p><p class="muted">After merge, Flux reconciles the repository and OpenChoreo controllers reconcile resources. The portal should show PR status separately from reconciliation status.</p>`;
+});
+document.getElementById("motionToggle").addEventListener("click",()=>{document.body.classList.toggle("reduced-motion");const off=document.body.classList.contains("reduced-motion");document.getElementById("motionToggle").innerHTML=off?'◌ <span>Motion: Off</span>':'◌ <span>Motion: On</span>';document.querySelectorAll("*").forEach(el=>{if(off){el.dataset.oldAnimation=el.style.animation;el.style.animation="none";el.style.transition="none"}else{el.style.animation=el.dataset.oldAnimation||"";el.style.transition=""}})});
+let light=false;
+document.getElementById("themeToggle").addEventListener("click",()=>{light=!light;if(light){document.documentElement.style.setProperty("--bg","#edf3fa");document.documentElement.style.setProperty("--panel","#fff");document.documentElement.style.setProperty("--panel2","#e6eef8");document.documentElement.style.setProperty("--line","#c7d5e5");document.documentElement.style.setProperty("--text","#152338");document.documentElement.style.setProperty("--muted","#53657c");document.body.style.background="radial-gradient(ellipse at 10% 0%,#d4f4f8 0,transparent 35%),#edf3fa";document.querySelectorAll(".card,.sidebar,.node,.pipe-step,details").forEach(e=>{e.style.background="#ffffff";e.style.color="#152338"});}else{location.reload()}});
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("visible")}),{threshold:.08});document.querySelectorAll(".reveal").forEach(e=>observer.observe(e));
+const links=[...document.querySelectorAll(".navlink")];const sectionObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-20% 0px -70% 0px"});document.querySelectorAll("main section[id]").forEach(s=>sectionObserver.observe(s));
+const backTop=document.getElementById("backTop");window.addEventListener("scroll",()=>backTop.classList.toggle("show",window.scrollY>500));backTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+</script>
+</body>
+</html>
