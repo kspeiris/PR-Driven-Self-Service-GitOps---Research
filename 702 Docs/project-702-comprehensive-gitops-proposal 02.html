@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project 702 | PR-Driven Self-Service GitOps for OpenChoreo</title>
+<style>
+:root{--bg:#0d1118;--panel:#171d28;--panel2:#1c2432;--line:#30394a;--text:#e8edf7;--muted:#a2aec2;--blue:#98aaff;--blue2:#687ee6;--green:#51d5a2;--amber:#f0c674;--red:#ff8585;--code:#0b1018;--shadow:0 12px 32px #0003}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:88px}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.68 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}button{font:inherit;cursor:pointer}h1,h2,h3,h4{line-height:1.25;letter-spacing:-.02em}h1{font-size:clamp(2rem,4vw,3.35rem);margin:12px 0}h2{font-size:1.7rem;margin:0 0 16px}h3{font-size:1.15rem;margin:24px 0 8px}h4{font-size:1rem;margin:16px 0 6px}p{color:#cbd4e3;max-width:90ch}li{color:#cbd4e3;margin:4px 0}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{font-size:.9em;color:#d9e0ff;background:#252e3e;padding:2px 5px;border-radius:4px}pre{white-space:pre;overflow:auto;background:var(--code);border:1px solid var(--line);border-radius:9px;padding:16px;color:#d4def2;font-size:12px;line-height:1.65}.top{position:sticky;top:0;z-index:20;background:#111722ed;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:11px 22px;gap:18px}.brand{display:flex;align-items:center;gap:10px;font-weight:750}.brandmark{display:grid;place-items:center;width:30px;height:30px;background:var(--blue2);color:#fff;border-radius:8px}.top-actions{display:flex;gap:8px;align-items:center}.btn{border:1px solid #46516a;color:var(--text);background:#222b3a;padding:8px 12px;border-radius:7px;font-size:12px;font-weight:650}.btn.primary{background:var(--blue2);border-color:var(--blue2);color:white}.btn:hover{filter:brightness(1.12)}.layout{display:grid;grid-template-columns:255px minmax(0,1fr);max-width:1600px;margin:auto}.sidebar{position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;border-right:1px solid var(--line);padding:20px 13px}.side-label{font-size:10px;text-transform:uppercase;letter-spacing:.13em;color:#7f8ba0;margin:17px 10px 7px}.sidebar a{display:block;color:#b9c5d8;padding:7px 10px;border-radius:6px;font-size:12px}.sidebar a:hover,.sidebar a.active{background:#252e40;color:#fff;text-decoration:none}.content{min-width:0;padding:28px clamp(18px,4vw,56px) 70px}.hero{border:1px solid var(--line);border-radius:18px;padding:clamp(25px,5vw,58px);background:radial-gradient(ellipse at 90% 0%,#34457955,transparent 45%),linear-gradient(145deg,#1a2230,#111722);box-shadow:var(--shadow)}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--blue);font-weight:750}.lead{font-size:17px;max-width:78ch;color:#cbd5e7}.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:26px}.meta div,.kpi,.card{border:1px solid var(--line);background:var(--panel);border-radius:10px}.meta div{padding:12px}.meta small,.muted{color:var(--muted)}.meta small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em}.meta b{font-size:12px}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}.chip,.tag{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:99px;padding:4px 8px;font-size:10px;color:#cbd5e7;background:#202938}.chip.green,.tag.green{color:var(--green);border-color:#286d58;background:#17352e}.chip.amber,.tag.amber{color:var(--amber);border-color:#725b2e;background:#302819}.section{padding-top:50px;margin-top:46px;border-top:1px solid var(--line)}.section-intro{color:var(--muted);margin-top:-6px;margin-bottom:20px}.grid{display:grid;gap:13px}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.card{padding:17px}.card h3:first-child,.card h4:first-child{margin-top:0}.card p{font-size:12px}.card .icon{font-size:21px;color:var(--blue);margin-bottom:8px}.kpi{padding:15px}.kpi b{font-size:24px;display:block}.kpi span{font-size:11px;color:var(--muted)}.callout{border:1px solid #3c4d76;background:#1a2438;padding:13px 15px;border-radius:8px;margin:15px 0;color:#d8e2fa}.callout.warn{border-color:#70582e;background:#2a2418}.callout.good{border-color:#286d58;background:#142a25}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:9px;margin:14px 0}table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}th,td{text-align:left;vertical-align:top;padding:11px 12px;border-bottom:1px solid var(--line)}th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#b8c4d8;background:#202837}td{color:#d1d9e7}tr:last-child td{border-bottom:0}.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin:18px 0}.flow .step{flex:1;min-width:125px;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:12px}.step b{display:block;font-size:12px}.step small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.arrow{align-self:center;color:var(--blue);font-size:20px}.diagram{background:#111722;border:1px solid var(--line);border-radius:10px;padding:18px;overflow:auto}.diagram pre{border:0;padding:0;background:transparent;margin:0}.timeline{border-left:2px solid #4a5a83;margin:22px 0 22px 9px;padding-left:24px}.milestone{position:relative;padding:0 0 22px}.milestone:before{content:"";position:absolute;left:-31px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--blue2);border:3px solid #232e47}.milestone b{display:block}.milestone small{color:var(--muted)}.checklist{list-style:none;padding:0}.checklist li{padding-left:26px;position:relative}.checklist li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}.pillline{display:flex;gap:8px;flex-wrap:wrap}.pillline span{border:1px solid var(--line);padding:5px 8px;border-radius:6px;background:#202837;font-size:11px}.screen-demo{background:#10151e;border:1px solid #384257;border-radius:11px;overflow:hidden;box-shadow:var(--shadow)}.demo-head{background:#29335c;padding:13px 16px;font-weight:750}.demo-tabs{display:flex;gap:0;background:#171d28;border-bottom:1px solid var(--line);overflow:auto}.demo-tabs button{background:transparent;color:#aab5c9;border:0;padding:10px 12px;font-size:10px;white-space:nowrap;border-bottom:2px solid transparent}.demo-tabs button.active{color:#fff;border-bottom-color:var(--blue)}.demo-body{padding:15px}.demo-columns{display:grid;grid-template-columns:1fr 1fr;gap:12px}.demo-panel{border:1px solid var(--line);background:#1a202c;border-radius:7px;padding:13px}.demo-panel h4{margin:0 0 10px;font-size:12px}.demo-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid #2c3545;font-size:11px}.demo-row:last-child{border-bottom:0}.demo-form label{display:block;color:#9daac0;font-size:10px;margin:10px 0 4px}.demo-form input,.demo-form select,.demo-form textarea{width:100%;background:#121824;color:#e7edf8;border:1px solid #38445a;border-radius:5px;padding:9px;font:inherit;font-size:11px}.demo-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}.demo-result{margin-top:13px;border:1px solid #286d58;background:#142a25;padding:10px;border-radius:6px;font-size:11px;display:none}.demo-result.show{display:block}.small{font-size:11px;color:var(--muted)}.footer{margin-top:55px;padding-top:22px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}.tocbtn{display:none}
+@media(max-width:1050px){.layout{grid-template-columns:210px minmax(0,1fr)}.meta{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.layout{display:block}.sidebar{display:none;position:fixed;z-index:30;top:54px;left:0;width:270px;height:calc(100vh - 54px);background:var(--bg);box-shadow:var(--shadow)}.sidebar.open{display:block}.tocbtn{display:inline-block}.content{padding:18px 14px 50px}.g2,.g3,.g4,.demo-columns{grid-template-columns:1fr}.meta{grid-template-columns:1fr 1fr}.hero{padding:23px}.top{padding:9px 12px}.top .top-actions .btn:not(.primary){display:none}.flow .step{min-width:42%}.arrow{display:none}}
+@media print{.top,.sidebar,.top-actions,.demo-actions,.tocbtn{display:none!important}.layout{display:block}.content{padding:0}.hero,.card,.tablewrap,.diagram{break-inside:avoid}.section{break-before:auto}.screen-demo{box-shadow:none}body{background:white;color:#111}.hero,.card,.meta div{background:white;color:#111;border-color:#aaa}p,li,td{color:#222}h1,h2,h3{color:#111}.section{border-color:#aaa}a{color:#222}}
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="brand"><span class="brandmark">702</span><span>OpenChoreo <span style="color:var(--muted);font-weight:500">/ Project Proposal</span></span></div>
+ <div class="top-actions"><button class="btn tocbtn" onclick="toggleNav()">☰ Contents</button><button class="btn" onclick="window.print()">Print / Save PDF</button><button class="btn primary" onclick="document.getElementById('interactive-flow').scrollIntoView({behavior:'smooth'})">Explore workflow ↓</button></div>
+</header>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+ <div class="side-label">Proposal</div>
+ <a href="#overview">01 · Executive summary</a><a href="#problem">02 · Problem & evidence</a><a href="#scope">03 · Scope & boundaries</a><a href="#requirements">04 · Requirements</a>
+ <div class="side-label">Design</div>
+ <a href="#architecture">05 · Architecture</a><a href="#workflow">06 · End-to-end workflow</a><a href="#ui">07 · Portal UX proposal</a><a href="#conflicts">08 · Conflict detection</a><a href="#pr">09 · Branch & PR strategy</a><a href="#security">10 · Security & credentials</a>
+ <div class="side-label">Implementation</div>
+ <a href="#repository">11 · Repository change plan</a><a href="#data">12 · Contracts & configuration</a><a href="#testing">13 · Testing & acceptance</a><a href="#roadmap">14 · Six-month roadmap</a><a href="#risks">15 · Risks & decisions</a><a href="#deliverables">16 · Deliverables</a>
+</nav>
+<main class="content">
+<section class="hero" id="overview">
+ <div class="eyebrow">Project 702 · Design research and implementation</div>
+ <h1>PR-Driven Self-Service GitOps for OpenChoreo Developers</h1>
+ <p class="lead">A proposal for turning developer intent in the existing OpenChoreo Backstage portal into a validated, conflict-aware Git change and a reviewable pull request—ending the core MVP at a successfully merged PR.</p>
+ <div class="meta">
+  <div><small>Mentor</small><b>Vajira Jayasrimal</b></div><div><small>Duration</small><b>6 months</b></div><div><small>Team</small><b>1 contributor</b></div><div><small>MVP provider</small><b>GitHub + Flux-compatible GitOps</b></div>
+ </div>
+ <div class="chips"><span class="chip green">Primary outcome: PR opened & merged</span><span class="chip">Existing Backstage portal</span><span class="chip">Reuse occ CLI</span><span class="chip amber">No controller changes in MVP</span></div>
+ <div class="callout">Scope boundary: this proposal specifies the complete workflow from discovery and design through portal interaction, validation, conflict checks, manifest generation, branch/commit creation, pull-request review and merge. Flux reconciliation and runtime readiness are described as the next hand-off, not required for the MVP completion gate.</div>
+</section>
+
+<section class="section" id="problem">
+ <h2>02 · Problem statement and current-state evidence</h2><p class="section-intro">The project closes the gap between OpenChoreo's developer portal and a GitOps repository, without rebuilding the platform or replacing existing deployment abstractions.</p>
+ <div class="grid g3">
+  <article class="card"><div class="icon">↯</div><h3>Direct-write portal actions</h3><p>Current portal actions call OpenChoreo APIs directly. In GitOps-managed environments, these writes bypass Git review and can be overwritten by reconciliation.</p></article>
+  <article class="card"><div class="icon">⌘</div><h3>Manual GitOps authoring</h3><p>Developers may have to author or update OpenChoreo YAML and commit it themselves even for a routine release promotion.</p></article>
+  <article class="card"><div class="icon">⛓</div><h3>Disconnected existing tools</h3><p><code>occ</code> can generate relevant manifests in file-system mode, and existing sample workflows can open GitOps PRs, but there is no generalized self-service PR path in the portal.</p></article>
+ </div>
+ <h3>Verified repository-review findings (9 October 2026)</h3>
+ <div class="tablewrap"><table><thead><tr><th>Area</th><th>What the repository review found</th><th>Design consequence</th></tr></thead><tbody>
+ <tr><td>GitOps awareness</td><td>No GitOps-aware implementation or GitOps mode flag was found in <code>backstage-plugins</code>.</td><td>Introduce a feature flag/configuration and branch the Deploy tab's promotion path deliberately.</td></tr>
+ <tr><td>Manifest generation</td><td>Existing commands are <code>occ componentrelease generate</code> and <code>occ releasebinding generate</code>; the latter supports file-system mode only.</td><td>Clone/check out the GitOps repo into a workspace before rendering; do not design around a non-existent generic <code>occ generate component</code> command.</td></tr>
+ <tr><td>Layout</td><td>File-system mode already reads root <code>release-config.yaml</code> configuration, including default output directory and per-project/component directory maps. It does not currently use arbitrary placeholder patterns.</td><td>Prefer existing layout configuration for MVP, then assess whether pattern support belongs upstream or in a resolver.</td></tr>
+ <tr><td>Backend packaging</td><td><code>occ</code> is not currently packaged in the Backstage backend image.</td><td>Make CLI packaging and version pinning an explicit prerequisite.</td></tr>
+ <tr><td>Overrides</td><td>Generation updates the release name on an existing binding; generic override patching is not provided by current file mode.</td><td>Override-to-PR requires a separate safe YAML patcher and should follow the promotion MVP if schedule is tight.</td></tr>
+ <tr><td>Deploy UX</td><td>Existing Deploy UI includes pipeline graph/canvas, environment detail panel, and release dialogs—not only environment cards.</td><td>Extend existing components and preserve established portal navigation instead of replacing the page.</td></tr>
+ <tr><td>GitHub support</td><td>The portal composition already loads Backstage's GitHub scaffolder module and GitHub auth provider.</td><td>Reuse built-in GitHub PR publishing where possible; add OpenChoreo-specific validation/render/conflict actions.</td></tr>
+ </tbody></table></div>
+ <div class="callout warn"><b>Scope correction:</b> the MVP is not “add a Create PR button.” It needs an end-to-end safe path: resolve target files, check in-flight changes, render correct resources, publish a branch and PR, and provide a clear hand-off at merge.</div>
+</section>
+
+<section class="section" id="scope">
+ <h2>03 · Goals, non-goals and MVP boundary</h2>
+ <div class="grid g2">
+  <div class="card"><h3>Goals</h3><ul class="checklist"><li>Allow a developer to initiate release promotion from the existing Deploy tab.</li><li>Validate source/target against the configured deployment pipeline.</li><li>Generate the intended OpenChoreo resource using existing <code>occ</code> functionality.</li><li>Detect overlapping open PRs and merged-but-not-yet-synced changes before publishing.</li><li>Create a reviewable GitHub PR with deterministic, traceable metadata.</li><li>Show the PR URL, state and relevant conflict explanation in the portal.</li><li>Make repository target paths configurable rather than hard-coded.</li><li>Use least-privilege credentials and avoid secret leakage.</li></ul></div>
+  <div class="card"><h3>Non-goals for the initial MVP</h3><ul><li>Changing OpenChoreo controllers or CRD behaviour.</li><li>Automatically merging PRs or automatically resolving Git conflicts.</li><li>Replacing build workflows or the existing release model.</li><li>Shipping a complete multi-provider implementation. GitLab and other providers are researched/design targets; GitHub is the implementation target.</li><li>Building a new standalone portal that duplicates OpenChoreo.</li><li>Making runtime readiness a hard completion requirement for the PR-creation MVP. It is an integration hand-off / later status enhancement.</li></ul></div>
+ </div>
+ <h3>Delivery slice</h3>
+ <div class="flow"><div class="step"><b>Included · MVP</b><small>GitHub · ReleaseBinding promotion · conflict gate · render · branch/commit · PR · human review/merge</small></div><div class="arrow">→</div><div class="step"><b>Follow-on</b><small>Override-to-PR patcher · ComponentRelease/Workload creation flows · richer status tracker</small></div><div class="arrow">→</div><div class="step"><b>Post-merge hand-off</b><small>Flux/Argo observes merged revision and reconciles OpenChoreo resources</small></div></div>
+</section>
+
+<section class="section" id="requirements">
+ <h2>04 · Functional and non-functional requirements</h2>
+ <h3>Functional requirements</h3>
+ <div class="tablewrap"><table><thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Verification</th></tr></thead><tbody>
+ <tr><td>FR-01</td><td>Expose a GitOps-aware promotion action from the existing component Deploy experience.</td><td><span class="tag green">Must</span></td><td>UI test confirms GitOps mode routes to PR flow and does not call direct promotion API.</td></tr>
+ <tr><td>FR-02</td><td>Resolve the selected component, project, namespace, source environment, target environment and release using portal context.</td><td><span class="tag green">Must</span></td><td>Required context validated; invalid pipeline transition rejected.</td></tr>
+ <tr><td>FR-03</td><td>Resolve the GitOps repository, base branch and target file path using configuration and existing layout conventions.</td><td><span class="tag green">Must</span></td><td>Unit tests for default layout and alternate mapping.</td></tr>
+ <tr><td>FR-04</td><td>Check open PRs for changed files that overlap the resolved target resource path.</td><td><span class="tag green">Must</span></td><td>Second overlapping request is stopped and links to existing PR.</td></tr>
+ <tr><td>FR-05</td><td>Detect a merged change that is not yet observed by the configured GitOps revision, where reliable revision information is available.</td><td><span class="tag">Should</span></td><td>Simulated revision lag produces a clear warning or retry result.</td></tr>
+ <tr><td>FR-06</td><td>Check out the GitOps repository and invoke supported <code>occ</code> file-system generation commands.</td><td><span class="tag green">Must</span></td><td>Generated manifest passes YAML/resource validation and is placed at expected path.</td></tr>
+ <tr><td>FR-07</td><td>Publish a branch, commit only intended generated files, and create a GitHub PR.</td><td><span class="tag green">Must</span></td><td>PR exists with expected base/head, title, body and diff.</td></tr>
+ <tr><td>FR-08</td><td>Return structured action output: PR URL/number, branch, target path, operation ID and validation summary.</td><td><span class="tag green">Must</span></td><td>Scaffolder result links to the PR and reports meaningful errors.</td></tr>
+ <tr><td>FR-09</td><td>Respect existing authorization/ABAC checks for promotion and environment access.</td><td><span class="tag green">Must</span></td><td>Unauthorized user cannot initiate the GitOps action.</td></tr>
+ <tr><td>FR-10</td><td>Prevent silent direct writes for operations not yet GitOps-enabled.</td><td><span class="tag green">Must</span></td><td>Unsupported operations show explicit block/warning rather than creating drift.</td></tr>
+ <tr><td>FR-11</td><td>Allow a human reviewer to review and merge the PR through normal GitHub policy.</td><td><span class="tag green">Must</span></td><td>Protected-branch rules and reviewer requirements remain authoritative.</td></tr>
+ <tr><td>FR-12</td><td>Record an audit trail linking user intent to the PR and generated resource metadata.</td><td><span class="tag">Should</span></td><td>Logs exclude secrets and contain correlation identifiers.</td></tr>
+ </tbody></table></div>
+ <h3>Non-functional requirements</h3>
+ <div class="grid g3"><div class="card"><h4>Security</h4><p>Least-privilege GitHub access, secret redaction, no credentials in generated manifests or logs, reuse identity/authorization.</p></div><div class="card"><h4>Reliability</h4><p>Idempotent checks, clear failure boundaries, no partial PR on generation failure, safe retry behaviour.</p></div><div class="card"><h4>Maintainability</h4><p>Small typed action contracts, unit-tested path resolution, pinned CLI version and configurable repository layout.</p></div><div class="card"><h4>Usability</h4><p>Explain conflicts with actionable PR links; do not silently overwrite a developer's existing change.</p></div><div class="card"><h4>Compatibility</h4><p>Reuse OpenChoreo CRDs and existing Backstage plugin conventions; no new controller API required for MVP.</p></div><div class="card"><h4>Observability</h4><p>Structured task logs, correlation ID, durations and action outcomes without logging tokens or secret values.</p></div></div>
+</section>
+
+<section class="section" id="architecture">
+ <h2>05 · Proposed architecture</h2><p class="section-intro">The primary implementation area is <code>openchoreo/backstage-plugins</code>. Existing OpenChoreo controllers remain unchanged in the MVP.</p>
+ <div class="diagram"><pre>┌──────────────────────────── OpenChoreo Experience Plane ────────────────────────────┐
+│ Developer → Existing Backstage Portal → Component Deploy tab / Scaffolder template   │
+│                                      │                                               │
+│                         GitOps feature flag + RBAC                                   │
+└──────────────────────────────────────┬───────────────────────────────────────────────┘
+                                       ▼
+┌──────────────────────────── Backstage Backend ──────────────────────────────────────┐
+│  1. Resolve context and repository layout                                             │
+│  2. Check open PR overlap + merged-but-not-synced condition                           │
+│  3. Checkout GitOps repo into isolated workspace                                      │
+│  4. Run pinned occ CLI in file-system mode                                            │
+│  5. Validate changed paths/diff and prepare branch                                    │
+│  6. Commit intended files and publish GitHub PR                                       │
+└──────────────────────────────────────┬───────────────────────────────────────────────┘
+                                       ▼
+                         ┌───────────────────────────┐
+                         │ GitHub GitOps repository  │
+                         │ Branch → Commit → PR      │
+                         └────────────┬──────────────┘
+                                      ▼
+                         Human review / required checks
+                                      ▼
+                                  MERGE PR
+                                      │
+                                      ▼
+                        GitOps hand-off (outside MVP gate)
+                         Flux CD / Argo CD → OpenChoreo
+                         Control Plane → Kubernetes</pre></div>
+ <h3>Component responsibilities</h3>
+ <div class="tablewrap"><table><thead><tr><th>Component</th><th>Responsibility</th><th>Implementation note</th></tr></thead><tbody>
+ <tr><td>OpenChoreo frontend plugin</td><td>GitOps mode UI, promotion form/action, conflict result and PR link.</td><td>Extend existing Deploy hooks/components and retain pipeline canvas, environment panel and release dialogs.</td></tr>
+ <tr><td>Scaffolder template</td><td>Collect/validate promotion intent and orchestrate actions.</td><td>Deep-linkable form can be prefilled from the Deploy tab. Reuse existing pickers such as namespace and deployment pipeline.</td></tr>
+ <tr><td>GitOps scaffolder actions</td><td>Resolve target, check conflicts, render, validate output.</td><td>Register using existing Scaffolder module conventions and typed input/output schemas.</td></tr>
+ <tr><td>occ CLI</td><td>Generate OpenChoreo manifests from repo context.</td><td>Package in backend runtime; invoke actual supported commands, pin version and capture diagnostics.</td></tr>
+ <tr><td>GitHub publishing</td><td>Create branch/commit/PR and return PR URL.</td><td>Reuse already-loaded <code>publish:github:pull-request</code> where suitable; use SCM integrations/Octokit for preflight conflict queries.</td></tr>
+ <tr><td>GitOps engine</td><td>Observe merged Git revision and reconcile.</td><td>Post-merge consumer; no new controller changes in the MVP.</td></tr>
+ </tbody></table></div>
+ <div class="callout">Design rule: the PR is the write request. The UI must not call the direct promotion endpoint as a hidden fallback when GitOps mode is enabled.</div>
+</section>
+
+<section class="section" id="workflow">
+ <h2>06 · Complete workflow: from developer intent to merge</h2>
+ <p class="section-intro">This is the end-to-end functional path the project must implement and demonstrate.</p>
+ <div class="flow">
+  <div class="step"><b>1. Start</b><small>Developer opens component → Deploy → Promote</small></div><div class="arrow">→</div>
+  <div class="step"><b>2. Validate intent</b><small>Identity, permissions, pipeline path, release and environment context</small></div><div class="arrow">→</div>
+  <div class="step"><b>3. Resolve target</b><small>Repository, base branch, layout and expected manifest path</small></div><div class="arrow">→</div>
+  <div class="step"><b>4. Conflict gate</b><small>Check open PR file overlap and pending merged revisions</small></div>
+ </div>
+ <div class="flow">
+  <div class="step"><b>5. Prepare workspace</b><small>Clone/checkout repository base branch; isolate temporary workspace</small></div><div class="arrow">→</div>
+  <div class="step"><b>6. Render</b><small>Run supported occ generation command in file-system mode</small></div><div class="arrow">→</div>
+  <div class="step"><b>7. Validate diff</b><small>Check YAML, resource identity, expected path and changed-file allowlist</small></div><div class="arrow">→</div>
+  <div class="step"><b>8. Publish PR</b><small>Branch → commit → PR → return URL and metadata</small></div>
+ </div>
+ <div class="flow">
+  <div class="step"><b>9. Review</b><small>Developer/reviewers inspect manifest diff and CI checks</small></div><div class="arrow">→</div>
+  <div class="step"><b>10. Merge</b><small>Normal repository rules decide when merge is permitted</small></div><div class="arrow">→</div>
+  <div class="step"><b>MVP complete</b><small>PR merged; merge SHA and resource context recorded for hand-off</small></div>
+ </div>
+ <h3>Failure behaviour at each stage</h3>
+ <div class="tablewrap"><table><thead><tr><th>Failure point</th><th>Expected behaviour</th></tr></thead><tbody>
+ <tr><td>Permission or pipeline validation</td><td>Stop before repository mutation; explain which selection is invalid or access is missing.</td></tr>
+ <tr><td>Repository configuration / credentials</td><td>Stop safely; show an actionable configuration error without printing credential material.</td></tr>
+ <tr><td>Conflict found</td><td>Do not generate/publish a second PR automatically. Show conflicting PR, overlapping path and options to view, cancel or explicitly update the existing PR if policy allows.</td></tr>
+ <tr><td>Clone or occ command fails</td><td>Fail the Scaffolder task; include sanitized command diagnostics; create no PR.</td></tr>
+ <tr><td>Unexpected generated paths</td><td>Reject output outside the allowed target path; do not commit unrelated workspace files.</td></tr>
+ <tr><td>GitHub branch/PR creation fails</td><td>Report stage and operation ID; clean up temporary workspace; do not report success unless the PR URL is confirmed.</td></tr>
+ <tr><td>PR merge is blocked</td><td>Leave merge policy to GitHub. Portal reports PR still open and links to review/checks; no automatic bypass.</td></tr>
+ </tbody></table></div>
+</section>
+
+<section class="section" id="ui">
+ <h2>07 · Proposed portal UX and interactive walkthrough</h2>
+ <p class="section-intro">The following is a proposal-level interactive mock-up. It illustrates the expected flow inside the existing OpenChoreo portal, not a connection to a live GitHub repository.</p>
+ <div class="screen-demo">
+  <div class="demo-head">OpenChoreo <span style="font-weight:400;color:#c5cdeb"> / Default Project / biocare-web / Deploy</span></div>
+  <div class="demo-tabs"><button class="active" onclick="demoTab('deploy',this)">Deploy overview</button><button onclick="demoTab('promote',this)">Promotion form</button><button onclick="demoTab('conflict',this)">Conflict result</button><button onclick="demoTab('pr',this)">Pull request result</button><button onclick="demoTab('merge',this)">Merge checkpoint</button></div>
+  <div class="demo-body" id="demo-deploy">
+   <div class="demo-columns"><div class="demo-panel"><h4>Deployment pipeline</h4><div class="demo-row"><span>Development</span><span class="tag green">Ready</span></div><div class="demo-row"><span>Staging</span><span class="tag amber">PR pending</span></div><div class="demo-row"><span>Production</span><span class="tag">Current release</span></div><div style="margin-top:12px"><button class="btn primary" onclick="demoTabByName('promote')">＋ Propose promotion</button></div></div><div class="demo-panel"><h4>Selected component</h4><div class="demo-row"><span>Component</span><b>biocare-web</b></div><div class="demo-row"><span>Source release</span><b>1.4.2</b></div><div class="demo-row"><span>Target environment</span><b>Staging</b></div><div class="demo-row"><span>Deployment writes</span><span class="tag green">GitOps PR mode</span></div></div></div>
+  </div>
+  <div class="demo-body" id="demo-promote" style="display:none"><div class="demo-columns"><div class="demo-panel demo-form"><h4>Propose release promotion</h4><label>Namespace</label><select><option>default</option></select><label>Project</label><select><option>Default Project</option></select><label>Component</label><input value="biocare-web" readonly><label>Source environment</label><select id="demo-source"><option>Development</option><option>Staging</option></select><label>Target environment</label><select id="demo-target"><option>Staging</option><option>Production</option></select><label>Release</label><select><option>1.4.2</option><option>1.4.1</option></select><div class="demo-actions"><button class="btn" onclick="demoTabByName('deploy')">Cancel</button><button class="btn primary" onclick="runDemoCheck()">Validate & check conflicts</button></div><div id="demo-validation" class="demo-result"></div></div><div class="demo-panel"><h4>What happens next?</h4><div class="demo-row"><span>1. Permission + pipeline check</span><span class="tag">Required</span></div><div class="demo-row"><span>2. Existing PR overlap check</span><span class="tag">Required</span></div><div class="demo-row"><span>3. Render ReleaseBinding</span><span class="tag">occ</span></div><div class="demo-row"><span>4. Commit and open PR</span><span class="tag">GitHub</span></div><p class="small">No live action is performed by this static mock-up.</p></div></div></div>
+  <div class="demo-body" id="demo-conflict" style="display:none"><div class="callout warn"><b>Potential conflict detected</b><br>An open PR already modifies the target ReleaseBinding path. A second PR was not created.</div><div class="demo-panel"><div class="demo-row"><span>Existing PR</span><a href="#pr">#128 · Promote biocare-web to Staging ↗</a></div><div class="demo-row"><span>Author</span><span>platform-developer</span></div><div class="demo-row"><span>Overlapping path</span><code>.../release-bindings/biocare-web-staging.yaml</code></div><div class="demo-row"><span>State</span><span class="tag amber">Review required</span></div><div class="demo-actions"><button class="btn" onclick="demoTabByName('promote')">Cancel and revise</button><button class="btn primary" onclick="demoTabByName('pr')">View existing PR</button></div></div></div>
+  <div class="demo-body" id="demo-pr" style="display:none"><div class="callout good"><b>Pull request created (illustrative)</b><br>GitOps desired state has been proposed. The live environment has not been changed by this action.</div><div class="demo-panel"><div class="demo-row"><span>Pull request</span><b>PR #129 · Promote biocare-web to Staging</b></div><div class="demo-row"><span>Branch</span><code>gitops/promote/default-biocare-web-staging</code></div><div class="demo-row"><span>Base branch</span><code>main</code></div><div class="demo-row"><span>Files changed</span><b>1 ReleaseBinding manifest</b></div><div class="demo-row"><span>Checks</span><span class="tag amber">Awaiting review</span></div><div class="demo-actions"><button class="btn" onclick="demoTabByName('deploy')">Back to Deploy</button><button class="btn primary" onclick="demoTabByName('merge')">Review merge checkpoint →</button></div></div></div>
+  <div class="demo-body" id="demo-merge" style="display:none"><div class="demo-panel"><h4>Merge checkpoint</h4><div class="demo-row"><span>Required reviewers approved</span><span class="tag green">GitHub policy</span></div><div class="demo-row"><span>Required checks passed</span><span class="tag green">GitHub policy</span></div><div class="demo-row"><span>Merge method</span><span>Repository-configured</span></div><div class="callout">The portal does not bypass protected-branch rules or auto-merge in the MVP. A user with the appropriate GitHub permission merges the PR. After merge, record the merge commit SHA; GitOps reconciliation is the next stage beyond this proposal's completion boundary.</div><div class="demo-actions"><button class="btn" onclick="demoTabByName('pr')">Back to PR</button><button class="btn primary" onclick="document.getElementById('demo-merged').classList.add('show')">Simulate merge checkpoint</button></div><div id="demo-merged" class="demo-result">Illustrative state: PR merged. Merge SHA and PR metadata are recorded. No live GitHub action was performed.</div></div></div>
+ </div>
+ <p class="small">Mock-up is for requirements review only. It does not use real credentials, repository state, or cluster data.</p>
+ <h3>UX requirements</h3>
+ <ul><li>Preserve the current OpenChoreo navigation and component Deploy tabs.</li><li>Use the existing deployment pipeline graph and environment detail panel; add GitOps status in context instead of creating a separate dashboard.</li><li>Make the primary action explicit: <b>Propose promotion (opens PR)</b>, not “Deploy now”.</li><li>Before publication, show the intended resource, target path and concise diff summary.</li><li>For conflicts, show the existing PR and overlapping path before any second PR is created.</li><li>After publication, display PR URL, author, branch, base branch and current PR state.</li><li>When GitOps mode is enabled, do not silently fall back to direct API promotion.</li></ul>
+</section>
+
+<section class="section" id="conflicts">
+ <h2>08 · Conflict detection design</h2>
+ <p class="section-intro">The goal is safe detection and clear developer choice—not automatic conflict resolution.</p>
+ <h3>Conflict cases</h3>
+ <div class="grid g2"><div class="card"><h4>Case A · Open PR overlaps target</h4><p>List open PRs for the configured repository/base branch. Compare changed file paths to the resolved ReleaseBinding path. If the target path is already changed, stop before publishing a second PR.</p><span class="tag amber">Hard stop by default</span></div><div class="card"><h4>Case B · Merged but not yet synced</h4><p>A prior PR is merged, but the observed GitOps revision has not advanced to include its merge SHA. A new request may be based on stale desired state; warn or block based on the reliability of the revision source.</p><span class="tag">Requires revision signal</span></div><div class="card"><h4>Case C · Branch/base moved</h4><p>Between conflict check and PR creation, base branch changes. Recheck target files / base SHA before publish or let GitHub's normal branch comparison reveal the race; fail safely when overlapping intent is discovered.</p><span class="tag">Race protection</span></div><div class="card"><h4>Case D · Git merge conflict</h4><p>The target branch and proposed branch cannot be merged cleanly. Do not auto-resolve. Surface GitHub conflict state and direct the developer to the PR or a fresh run.</p><span class="tag">Human resolution</span></div></div>
+ <h3>Recommended algorithm</h3>
+ <pre>input: repo, baseBranch, component, namespace, project, targetEnvironment
+path = resolveTargetPath(layoutConfig, resourceContext)
+if !authorized(user, "promote", component, targetEnvironment):
+    return DENIED
+validatePromotionPath(deploymentPipeline, sourceEnvironment, targetEnvironment)
+openPRs = scm.listOpenPullRequests(repo, baseBranch)
+for pr in openPRs:
+    changedPaths = scm.listChangedFiles(pr)
+    if pathsOverlap(changedPaths, path):
+        return CONFLICT(prUrl, prNumber, author, changedPaths ∩ path)
+
+baseSha = scm.getBranchHead(repo, baseBranch)
+pendingMerge = findMergedChangeNotObservedByGitOps(path, baseSha)
+if pendingMerge is reliably detected:
+    return PENDING_SYNC(pendingMerge)
+
+workspace = checkoutRepositoryAt(baseSha)
+runOccGeneration(workspace, resourceContext)
+changed = inspectGitDiff(workspace)
+assert changed is not empty
+assert every changed path is allowed for this operation
+validateGeneratedYAML(changed)
+recheckBaseAndConflicts()  // narrow the race window
+branch = deterministicBranchName(context)
+commitOnly(changed, branch)
+pr = createPullRequest(branch, baseBranch, title, body, labels)
+return CREATED(pr.url, pr.number, branch, changed)</pre>
+ <h3>Path overlap rules</h3>
+ <ul><li>Exact target path match is a conflict.</li><li>If an operation is allowed to update a directory, any changed file within that directory is a conflict.</li><li>Normalize separators and reject path traversal such as <code>../</code>; compare repository-relative canonical paths.</li><li>For MVP promotion, scope the write allowlist to the resolved ReleaseBinding manifest. Do not infer overlap solely from PR title or branch name.</li><li>Do not treat every PR in the repository as a conflict; only resource/path overlap or a relevant pending merge should block the request.</li></ul>
+ <div class="callout warn"><b>Important nuance:</b> a deterministic branch plus <code>update: true</code> may silently update an existing PR for the same component/environment. The conflict gate must define when that is safe. Default MVP behaviour should surface the existing PR and require an explicit update/reuse choice rather than unexpectedly overwriting it.</div>
+ <h3>Conflict result contract</h3>
+ <pre>{
+  "status": "CONFLICT",
+  "reason": "OPEN_PR_OVERLAP",
+  "repository": "org/platform-gitops",
+  "baseBranch": "main",
+  "targetPath": "namespaces/default/projects/payments/components/api/release-bindings/api-staging.yaml",
+  "existingPullRequest": {
+    "number": 128,
+    "url": "https://github.com/org/platform-gitops/pull/128",
+    "state": "open",
+    "author": "developer-handle"
+  },
+  "nextActions": ["view-existing-pr", "cancel", "request-explicit-update"]
+}</pre>
+</section>
+
+<section class="section" id="pr">
+ <h2>09 · Branch, commit, pull request and merge policy</h2>
+ <h3>Branch and idempotency</h3>
+ <ul><li>Use a predictable branch identity for the resource/action, for example <code>gitops/promote/&lt;namespace&gt;-&lt;component&gt;-&lt;target-environment&gt;</code>, with safe slugging and length limits.</li><li>Use the PR's structured metadata and file diff as the source of truth—not branch naming alone.</li><li>Before reusing an existing branch/PR, run the conflict policy and tell the user whether the existing PR will be updated.</li><li>Keep each PR narrowly scoped to the intended manifest change. Fail if unrelated files are modified.</li><li>Use a clear commit message, e.g. <code>gitops: promote biocare-web to staging</code>.</li></ul>
+ <h3>PR content requirements</h3>
+ <div class="tablewrap"><table><thead><tr><th>Field</th><th>Expected content</th></tr></thead><tbody><tr><td>Title</td><td><code>Promote &lt;component&gt; to &lt;environment&gt;</code></td></tr><tr><td>Body</td><td>Developer intent, component/project/namespace, source and target environments, release name, generated resource path, and instructions for reviewing the diff.</td></tr><tr><td>Labels</td><td>Optional configured label such as <code>openchoreo</code>, <code>gitops</code>, <code>promotion</code>.</td></tr><tr><td>Reviewers</td><td>Use configured CODEOWNERS/team policy or explicitly configured reviewers; do not invent or bypass policy.</td></tr><tr><td>Audit metadata</td><td>Portal operation ID and resource context; no tokens, secret values or sensitive form data.</td></tr><tr><td>Checks</td><td>GitHub branch protection and required CI checks remain authoritative.</td></tr></tbody></table></div>
+ <h3>Merge behaviour</h3>
+ <div class="flow"><div class="step"><b>PR opened</b><small>Portal returns URL and state</small></div><div class="arrow">→</div><div class="step"><b>Review & checks</b><small>GitHub owns approvals and CI</small></div><div class="arrow">→</div><div class="step"><b>Authorized merge</b><small>Human merges under repository rules</small></div><div class="arrow">→</div><div class="step"><b>Record merge</b><small>Capture merge SHA and PR metadata</small></div></div>
+ <div class="callout good">The MVP completion test ends when the expected PR is merged and the merge SHA is recorded. Flux/Argo sync, OpenChoreo reconciliation and Ready conditions are downstream integration checks and can be demonstrated as an optional end-to-end extension.</div>
+</section>
+
+<section class="section" id="security">
+ <h2>10 · Security, authorization and credential design</h2>
+ <div class="grid g2"><div class="card"><h3>Credential strategy</h3><ul><li>Use Backstage SCM integration and the configured GitHub credential provider.</li><li>Choose user-attributed OAuth or a service/bot identity with the mentor/platform team's agreement.</li><li>Prefer a GitHub App or tightly scoped token for repository write + PR permissions.</li><li>Store secrets in approved Backstage configuration/secret management; never commit them into the GitOps repository.</li><li>Do not log Authorization headers, tokens or environment-secret values.</li></ul></div><div class="card"><h3>Authorization and trust boundaries</h3><ul><li>Reuse existing OpenChoreo ABAC checks, including promotion/environment permissions.</li><li>Validate repository and branch against trusted configuration; do not let arbitrary user input select an untrusted repo.</li><li>Run <code>occ</code> in an isolated temporary workspace with timeouts and bounded output.</li><li>Restrict generated paths and commit only reviewed output files.</li><li>Use normal GitHub branch protection; do not give the action permission to bypass reviews.</li></ul></div></div>
+ <h3>Operational safeguards</h3>
+ <ul><li>Pin the <code>occ</code> version compatible with the deployed OpenChoreo schema and document upgrade steps.</li><li>Validate all names/paths to prevent path traversal or shell argument injection; invoke subprocesses without unsafe shell interpolation.</li><li>Ensure temporary clones and workspaces are cleaned after success/failure.</li><li>Use structured, sanitized error messages and a correlation ID across Scaffolder actions.</li><li>Keep the GitHub token out of template form values, task output and PR body.</li></ul>
+ <h3>Provider strategy</h3><div class="tablewrap"><table><thead><tr><th>Provider</th><th>Project treatment</th></tr></thead><tbody><tr><td>GitHub</td><td>Build and test MVP using the existing portal GitHub scaffolder integration.</td></tr><tr><td>GitLab</td><td>Research credentials, PR/MR publishing and API equivalents; document adapter requirements.</td></tr><tr><td>Bitbucket / Azure DevOps</td><td>Consider in provider comparison; not required for the initial implementation.</td></tr></tbody></table></div>
+</section>
+
+<section class="section" id="repository">
+ <h2>11 · Repository-level implementation plan</h2>
+ <p class="section-intro">The source review identified specific integration seams. Exact filenames and exports should be reconfirmed against the checked-out branch before coding.</p>
+ <div class="tablewrap"><table><thead><tr><th>Repository / area</th><th>Change</th><th>Implementation detail</th><th>Priority</th></tr></thead><tbody>
+ <tr><td><code>plugins/openchoreo</code></td><td>GitOps mode and Deploy integration</td><td>Branch <code>handlePromote(source,target)</code> in the environment action hook to invoke Scaffolder instead of <code>client.promoteToEnvironment</code> when GitOps is enabled. Update action labels, loading state and status to represent a long-lived open PR.</td><td><span class="tag green">P0</span></td></tr>
+ <tr><td><code>plugins/openchoreo</code></td><td>Feature flag/config</td><td>Add a convention-compatible <code>openchoreo.features.gitops.enabled</code> flag with corresponding config/Helm wiring as appropriate. Decide per-project/repository configuration model.</td><td><span class="tag green">P0</span></td></tr>
+ <tr><td><code>plugins/scaffolder-backend-module-openchoreo</code> or sibling module</td><td>GitOps actions</td><td>Add typed actions for context/path resolution and validation, conflict checking, and rendering; register with the existing Scaffolder module pattern.</td><td><span class="tag green">P0</span></td></tr>
+ <tr><td>Scaffolder templates</td><td>Promotion template</td><td>Add <code>promote-openchoreo-component</code> template, use existing pickers (namespace, pipeline, component), inject OpenChoreo user token decorator where required, then run validate → conflict check → render → GitHub publish action.</td><td><span class="tag green">P0</span></td></tr>
+ <tr><td>Backstage runtime image</td><td>Ship <code>occ</code></td><td>Install/copy a pinned CLI binary into the backend image, verify OS/architecture, expose version in diagnostics and add a smoke test.</td><td><span class="tag green">P0</span></td></tr>
+ <tr><td>Git provider integration</td><td>Repository/PR API</td><td>Use Backstage SCM integrations/credential providers and Octokit (or existing abstractions) to list open PRs and changed files; reuse built-in GitHub PR publishing if its behaviour fits.</td><td><span class="tag green">P0</span></td></tr>
+ <tr><td><code>plugins/openchoreo-common</code></td><td>Shared types</td><td>Add typed GitOps config/status/result contracts if needed; keep front-end and backend contracts aligned.</td><td><span class="tag">P1</span></td></tr>
+ <tr><td><code>plugins/openchoreo-backend</code></td><td>Optional status endpoint</td><td>Only if needed for conflict/status data not naturally represented by Scaffolder outputs; keep the first PR flow as simple as possible.</td><td><span class="tag">P1</span></td></tr>
+ <tr><td><code>openchoreo/openchoreo</code></td><td>CLI hybrid dependency resolution</td><td>Investigate the application-only repository dependency gap. Existing file mode requires repository context; cluster fallback for ComponentTypes/Traits is a design/research or upstream follow-on unless the mentor makes it MVP-critical.</td><td><span class="tag">P2 / research</span></td></tr>
+ <tr><td>Override editor</td><td>Overrides-to-PR path</td><td>Separate YAML patcher required to modify <code>componentTypeEnvironmentConfigs</code>, <code>traitEnvironmentConfigs</code> and <code>workloadOverrides</code> while preserving unrelated fields. Do not assume current <code>occ releasebinding generate</code> does this.</td><td><span class="tag amber">P2</span></td></tr>
+ </tbody></table></div>
+ <h3>Scaffolder action sequence</h3>
+ <pre>template inputs
+  ├─ namespace / project / component
+  ├─ source environment / target environment
+  ├─ release selection
+  └─ configured GitOps repository
+       ↓
+openchoreo:gitops:validate-and-resolve
+       ↓
+openchoreo:gitops:check-conflicts
+       ↓
+openchoreo:gitops:render
+       ├─ checkout GitOps repository at base SHA
+       ├─ run occ releasebinding generate with supported flags
+       └─ return target path + render summary
+       ↓
+validate generated diff / allowed paths
+       ↓
+publish:github:pull-request
+       ↓
+return PR URL, number, branch, files changed</pre>
+ <div class="callout">Repository-review correction: do not assume overrides are generated by the same command as promotion. For MVP, prioritize ReleaseBinding promotion. The action must fail if <code>occ</code> exits non-zero; it must not publish a partially generated change.</div>
+</section>
+
+<section class="section" id="data">
+ <h2>12 · Configuration, path model and action contracts</h2>
+ <h3>Repository configuration</h3>
+ <p>Reuse the current <code>release-config.yaml</code> model where possible for MVP. Existing file-system mode uses default output directory and project/component mappings, not arbitrary placeholder templates. If pattern-based paths are required, implement a resolver in the plugin or propose upstream support rather than assuming the CLI already accepts placeholder patterns.</p>
+ <pre># Illustrative configuration concept — adapt to the actual release-config.yaml schema
+openchoreo:
+  gitops:
+    enabled: true
+    provider: github
+    repository: org/platform-gitops
+    baseBranch: main
+    conflictPolicy: block-on-overlap
+    pullRequest:
+      draft: false
+      labels: [openchoreo, gitops, promotion]
+      reviewersFromRepositoryPolicy: true
+    occ:
+      version: "<pinned-compatible-version>"
+      timeoutSeconds: 60</pre>
+ <h3>Path resolution principles</h3>
+ <ul><li>Resolve paths from trusted repository configuration and resource context, never from unchecked free-text form input.</li><li>Use the repository's existing layout conventions for the first MVP.</li><li>Expose the resolved target path in the review step before publication.</li><li>Canonicalize and validate repository-relative paths; reject traversal and out-of-scope changes.</li><li>Test the same operation against the default layout and at least one alternate configured layout if pattern support is delivered.</li></ul>
+ <h3>Action input/output contract (illustrative)</h3>
+ <pre>GitOpsPromotionInput {
+  namespace: string
+  project: string
+  component: string
+  sourceEnvironment: string
+  targetEnvironment: string
+  componentRelease: string
+  repository: TrustedRepositoryReference
+  baseBranch: string
+  operationId: string
+}
+
+GitOpsPromotionResult {
+  status: "CREATED" | "CONFLICT" | "FAILED"
+  operationId: string
+  repositoryUrl?: string
+  targetPath?: string
+  branchName?: string
+  pullRequestNumber?: number
+  pullRequestUrl?: string
+  conflict?: {
+    reason: string
+    existingPullRequestUrl: string
+    overlappingPaths: string[]
+  }
+  validationSummary: string[]
+}</pre>
+ <p class="small">The contracts are design examples, not existing APIs. Final types should follow the Backstage plugin conventions and current repository types.</p>
+</section>
+
+<section class="section" id="testing">
+ <h2>13 · Testing strategy and acceptance criteria</h2>
+ <h3>Test levels</h3>
+ <div class="grid g3"><div class="card"><h4>Unit</h4><ul><li>Path resolver and canonicalization</li><li>Pipeline transition validation</li><li>Conflict overlap rules</li><li>Action input/output validation</li><li>occ process exit handling</li><li>Secret redaction</li></ul></div><div class="card"><h4>Integration</h4><ul><li>Scaffolder action registration</li><li>GitHub mock/API integration</li><li>Checkout, render and diff allowlist</li><li>Branch/commit/PR creation</li><li>GitHub permission failure</li><li>Retry and idempotency behaviour</li></ul></div><div class="card"><h4>End-to-end</h4><ul><li>Portal promotion creates PR</li><li>PR contains expected ReleaseBinding</li><li>Reviewer approves and merges</li><li>Merge SHA is captured</li><li>Conflict scenario blocks second PR</li><li>Direct API path is not invoked in GitOps mode</li></ul></div></div>
+ <h3>Acceptance criteria</h3>
+ <ul class="checklist"><li>A developer can initiate a valid promotion from the existing Deploy tab without hand-authoring YAML.</li><li>When GitOps mode is enabled, the portal creates a GitHub PR rather than directly mutating the ReleaseBinding through the OpenChoreo API.</li><li>The rendered manifest is generated using a supported <code>occ</code> command and matches the selected component/release/environment.</li><li>The PR changes only the expected resource path(s); no unrelated files are committed.</li><li>A second request for the same target resource detects the existing open PR and does not silently overwrite it.</li><li>Invalid promotion paths, missing permissions, missing CLI and rendering errors fail safely before PR creation.</li><li>The created PR has a useful title/body, correct base branch, traceable resource metadata and a URL displayed to the developer.</li><li>GitHub protected branch rules and review requirements cannot be bypassed by the action.</li><li>A reviewer can merge the PR normally; the operation records PR number, merge state and merge SHA where available.</li><li>Automated tests cover normal flow, conflict flow, command failure and GitHub API failure.</li><li>Documentation and a repeatable demo explain setup, configuration, limitations and troubleshooting.</li></ul>
+ <h3>Core demonstration scenario</h3>
+ <ol><li>Start the local OpenChoreo/Backstage environment and configure a throwaway GitHub GitOps repository.</li><li>Open a component's Deploy tab and select a valid source/target promotion.</li><li>Show the resolved path and conflict check.</li><li>Confirm the generated ReleaseBinding diff and open PR in GitHub.</li><li>Open a second promotion targeting the same resource and show that the existing PR is surfaced rather than silently updated.</li><li>Review the PR, satisfy repository checks, merge it with an authorized account, and capture the merge SHA.</li><li>Optionally show Flux detecting the merge as a post-MVP hand-off demonstration.</li></ol>
+</section>
+
+<section class="section" id="roadmap">
+ <h2>14 · Six-month implementation roadmap</h2>
+ <p class="section-intro">Indicative sequencing for one contributor. Adjust dates to the approved project start; dependency and review time are included.</p>
+ <div class="timeline">
+  <div class="milestone"><b>Month 1 · Repository verification and design</b><small>Weeks 1–4</small><ul><li>Reproduce portal and local GitOps workflow.</li><li>Confirm Scaffolder registration, auth and ABAC extension points.</li><li>Verify occ flags, release-config schema and generation behaviour.</li><li>Agree on GitHub identity, conflict policy, target layout and PR metadata with mentor.</li><li>Deliver architecture, decision log and UI interaction proposal.</li></ul></div>
+  <div class="milestone"><b>Month 2 · CLI packaging and first render action</b><small>Weeks 5–8</small><ul><li>Package/pin occ in Backstage backend image.</li><li>Implement isolated repository checkout and render action.</li><li>Validate output paths and resource identity.</li><li>Write unit tests and prove generated YAML in a throwaway repo.</li></ul></div>
+  <div class="milestone"><b>Month 3 · GitHub PR publishing and Deploy integration</b><small>Weeks 9–12</small><ul><li>Create the promotion Scaffolder template.</li><li>Use existing pickers and validate deployment pipeline path.</li><li>Wire Deploy tab promotion action to Scaffolder under GitOps mode.</li><li>Publish branch/commit/PR and display the PR URL.</li></ul></div>
+  <div class="milestone"><b>Month 4 · Conflict detection and safe retries</b><small>Weeks 13–16</small><ul><li>Query open PRs and changed files.</li><li>Implement canonical path overlap checks.</li><li>Define existing-PR update policy and stale-base recheck.</li><li>Implement pending-merge/sync warning if a reliable revision signal is available.</li><li>Test simultaneous and repeated promotions.</li></ul></div>
+  <div class="milestone"><b>Month 5 · Hardening and review/merge workflow</b><small>Weeks 17–20</small><ul><li>Enforce least privilege and secret redaction.</li><li>Handle GitHub API, CLI, merge-conflict and permission errors.</li><li>Validate protected branch / reviewer workflow.</li><li>Capture merge metadata and operation audit trail.</li><li>Complete integration and end-to-end tests.</li></ul></div>
+  <div class="milestone"><b>Month 6 · Documentation, demo and stretch scope</b><small>Weeks 21–24</small><ul><li>Deliver setup/configuration and troubleshooting docs.</li><li>Record end-to-end promotion → conflict → PR → merge demo.</li><li>Assess override-to-PR patcher and hybrid occ dependency resolution with mentor.</li><li>Prepare upstream issue/PR where CLI changes are approved.</li><li>Buffer for review feedback, bug fixes and final report.</li></ul></div>
+ </div>
+ <div class="callout">Priority rule: if time becomes constrained, finish and test GitHub + ReleaseBinding promotion + conflict check + PR + merge first. Overrides, full multi-provider support, generic create-resource flows and richer post-merge status remain follow-on work.</div>
+</section>
+
+<section class="section" id="risks">
+ <h2>15 · Risks, assumptions and decisions</h2>
+ <div class="tablewrap"><table><thead><tr><th>Risk / open decision</th><th>Impact</th><th>Mitigation / decision needed</th></tr></thead><tbody>
+ <tr><td>occ not packaged in Backstage image</td><td>Rendering cannot run in the real portal backend.</td><td>Decide binary/container packaging in Month 1; pin version and add smoke test early.</td></tr>
+ <tr><td>Repository layout assumptions differ from actual CLI</td><td>Generated files may be placed incorrectly.</td><td>Reuse release-config.yaml conventions first; document limitations and test a real checkout.</td></tr>
+ <tr><td>Open PR race after conflict check</td><td>Two changes can target the same file after preflight.</td><td>Recheck near publish; use deterministic resource key and explicit update policy; GitHub remains final merge-conflict authority.</td></tr>
+ <tr><td>Direct writes remain available</td><td>Flux can revert portal changes and confuse developers.</td><td>Feature-flag the PR route; block/warn on unsupported write actions in GitOps mode.</td></tr>
+ <tr><td>Promotion validation happens in controller</td><td>A bad path may still merge and later show a resource condition.</td><td>Validate the pipeline path in the portal before PR creation; retain human review and explain downstream reconciliation is separate.</td></tr>
+ <tr><td>Override generation unsupported by occ file mode</td><td>Cannot safely reuse promotion renderer for overrides.</td><td>Keep override-to-PR post-MVP unless time permits; use a tested YAML patcher that preserves unrelated fields.</td></tr>
+ <tr><td>Provider identity/credential model unresolved</td><td>PR attribution or access scope may be wrong.</td><td>Mentor/platform decision: user-attributed GitHub identity vs service/bot identity; document least-privilege scopes.</td></tr>
+ <tr><td>Hybrid dependency resolution in occ requires upstream change</td><td>Application-only repos may not contain platform types/traits needed by rendering.</td><td>Prototype and test repo-first dependency resolution; treat cluster fallback as an upstream/research follow-on unless required to complete MVP.</td></tr>
+ <tr><td>GitOps status signal unavailable</td><td>Cannot reliably classify merged-but-not-synced.</td><td>Make open-PR file overlap a hard MVP; gate pending-sync warning on a verifiable Flux revision source.</td></tr>
+ </tbody></table></div>
+ <h3>Decisions to confirm with mentor</h3>
+ <ol><li>Is the first demo specifically GitHub + ReleaseBinding promotion + Flux, with merge as the formal completion point?</li><li>Should a second same-resource request always block, or may a developer explicitly update an existing PR?</li><li>Should PR authorship use the user's GitHub identity or a service account/GitHub App?</li><li>Should repository layout use the existing release-config.yaml model only, or is placeholder-based pattern support required for MVP?</li><li>Which source can reliably expose the observed Flux revision for merged-but-not-synced detection?</li><li>Is override-to-PR mandatory for final acceptance or a stretch goal after promotion is complete?</li></ol>
+</section>
+
+<section class="section" id="deliverables">
+ <h2>16 · Expected deliverables and definition of done</h2>
+ <div class="grid g2">
+  <div class="card"><h3>Engineering deliverables</h3><ul><li>GitOps configuration/feature flag for the existing portal.</li><li>Scaffolder promotion template and custom validation/conflict/render actions.</li><li>Packaged and version-pinned occ runtime.</li><li>GitHub branch/commit/PR publishing integration.</li><li>Deploy-tab PR mode with clear result/error UX.</li><li>Conflict check for open PRs touching the same target path.</li><li>Unit, integration and end-to-end tests.</li></ul></div>
+  <div class="card"><h3>Research and project deliverables</h3><ul><li>Comparison of Backstage SCM actions, OpenChoreo sample-gitops workflow and Red Hat Developer Hub/Argo CD patterns.</li><li>Documented configurable layout and credential model.</li><li>Conflict/pending-state design and decision record.</li><li>GitHub vs GitLab/provider comparison.</li><li>Installation, configuration, troubleshooting and developer documentation.</li><li>Recorded demonstration of promotion → conflict check → PR → review → merge.</li><li>Summary of stretch work and upstream CLI recommendations.</li></ul></div>
+ </div>
+ <h3>Definition of done</h3>
+ <div class="callout good"><b>The project MVP is complete when:</b> a permitted developer can initiate a valid promotion in the existing OpenChoreo portal; the backend checks for overlapping changes; <code>occ</code> generates the expected ReleaseBinding manifest; only the intended file is committed to a GitHub branch; a reviewable PR is opened and linked in the portal; a second overlapping request is safely surfaced; and an authorized reviewer can merge the PR under normal repository rules. The merge SHA and action metadata are recorded, tests pass, and the flow is documented and demonstrated.</div>
+ <h3>Reference materials used</h3>
+ <ul><li>Project 702 overview and initial scope notes.</li><li>Project 702 proposal: “PR-Driven Self-Service GitOps for OpenChoreo Developers”.</li><li>Executive summary and architecture notes for Backstage, <code>occ</code>, GitHub PR publishing and Flux/Argo CD.</li><li>“Project 702: Repo Review and Required Changes (openchoreo + backstage-plugins)”, repository review dated 9 October 2026.</li><li>OpenChoreo portal screenshots supplied for Home, Create Resource, component creation, project creation, Platform graph, project catalog, and component Build configuration.</li></ul>
+ <p class="small">Verified code findings are distinguished above from proposed design choices. Illustrative config, pseudocode and mock UI are proposal artifacts and must be adapted to actual repository types and APIs during implementation.</p>
+</section>
+<footer class="footer">Project 702 · PR-Driven Self-Service GitOps for OpenChoreo Developers · Proposal and interactive design artifact · Scope through PR merge</footer>
+</main>
+</div>
+<script>
+function toggleNav(){document.getElementById('sidebar').classList.toggle('open')}
+function demoTab(name,button){document.querySelectorAll('.demo-body').forEach(x=>x.style.display='none');document.getElementById('demo-'+name).style.display='block';document.querySelectorAll('.demo-tabs button').forEach(x=>x.classList.remove('active'));if(button)button.classList.add('active');else{const names=['deploy','promote','conflict','pr','merge'];document.querySelectorAll('.demo-tabs button')[names.indexOf(name)].classList.add('active')}}
+function demoTabByName(name){demoTab(name,null)}
+function runDemoCheck(){const source=document.getElementById('demo-source').value,target=document.getElementById('demo-target').value;const box=document.getElementById('demo-validation');box.classList.add('show');if(source===target){box.style.borderColor='#9b4a4a';box.style.background='#321c22';box.textContent='Validation failed: source and target environments must be different.';return}if(source==='Staging'&&target==='Staging'){box.textContent='Validation failed.';return}box.style.borderColor='#70582e';box.style.background='#2a2418';box.innerHTML='Validation passed. Conflict preflight will query open PRs and changed paths before rendering. <b>For demonstration, choose “Conflict result” to inspect the blocked scenario or “Pull request result” to inspect a successful example.</b>'}
+document.querySelectorAll('.sidebar a').forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<760)document.getElementById('sidebar').classList.remove('open')}));
+</script>
+</body>
+</html>
