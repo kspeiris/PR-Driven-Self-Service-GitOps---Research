@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Port.io Workflows — Complete Technical Guide for OpenChoreo Project 702</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--text:#182235;--muted:#596579;--line:#dce3ee;--accent:#4b5de8;--accent2:#0f9d8a;--code:#101827;--codeText:#e8edf7;--warn:#fff4d6;--shadow:0 8px 24px rgba(28,45,80,.07)}
+[data-theme="dark"]{--bg:#0d1320;--panel:#151e2d;--text:#edf2fc;--muted:#a8b4c8;--line:#2c3a50;--accent:#9aa7ff;--accent2:#5bd7c4;--code:#080d16;--codeText:#e8edf7;--warn:#392e16;--shadow:0 8px 24px rgba(0,0,0,.22)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}.top{position:sticky;top:0;z-index:10;background:var(--panel);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 22px;gap:16px}.brand{font-weight:800;letter-spacing:.2px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}button,.button{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:650}button:hover,.button:hover{border-color:var(--accent)}.layout{max-width:1440px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:26px;padding:26px}.sidebar{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 95px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}.sidebar h3{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.sidebar a{display:block;color:var(--muted);padding:6px 9px;border-radius:8px;font-size:13px}.sidebar a.active,.sidebar a:hover{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--text);text-decoration:none}.content{min-width:0}.hero{padding:38px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 11%,var(--panel)),var(--panel));box-shadow:var(--shadow)}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);font-weight:800}.hero h1{font-size:clamp(30px,4vw,48px);line-height:1.12;letter-spacing:-.04em;margin:12px 0}.hero p{font-size:18px;max-width:850px;color:var(--muted)}.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.pill{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:5px 10px;background:var(--panel)}section{scroll-margin-top:90px;margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:var(--shadow)}h2{font-size:27px;line-height:1.2;letter-spacing:-.025em;margin:0 0 16px}h3{font-size:19px;margin:24px 0 8px}h4{font-size:15px;margin:18px 0 6px}p{margin:9px 0}ul,ol{padding-left:24px}li{margin:5px 0}.muted{color:var(--muted)}.callout{border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--panel));padding:14px 16px;border-radius:8px;margin:16px 0}.warning{border-left-color:#d89b1d;background:var(--warn)}.grid2,.grid3{display:grid;gap:14px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.card{border:1px solid var(--line);border-radius:13px;padding:16px;background:color-mix(in srgb,var(--panel) 94%,var(--bg))}.card strong{display:block;margin-bottom:5px}.diagram{background:var(--code);color:var(--codeText);border-radius:14px;padding:20px;overflow:auto;font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;margin:14px 0}.codewrap{position:relative;margin:14px 0}.codewrap .copy{position:absolute;right:8px;top:8px;background:#26334a;color:#fff;border-color:#52617a;font-size:12px}.code{background:var(--code);color:var(--codeText);border-radius:12px;padding:18px;overflow:auto;font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}th,td{padding:11px 12px;border:1px solid var(--line);text-align:left;vertical-align:top}th{background:color-mix(in srgb,var(--accent) 8%,var(--panel))}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}.tabs button[aria-selected="true"]{background:var(--accent);color:white;border-color:var(--accent)}.tabpane{display:none}.tabpane.active{display:block}.simulator{border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px}.simulator label{display:block;font-weight:700;font-size:13px;margin:10px 0 4px}.simulator input,.simulator select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text)}.status{padding:12px;border-radius:9px;background:color-mix(in srgb,var(--accent2) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--accent2) 45%,var(--line));margin-top:12px}.flow{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;margin:16px 0}.flow .node{flex:1 1 125px;min-width:115px;padding:12px;border:1px solid var(--line);border-radius:10px;text-align:center;background:var(--panel);font-weight:700}.flow .arrow{align-self:center;color:var(--accent);font-size:20px;font-weight:900}.tag{display:inline-block;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-size:12px;color:var(--muted)}.source-list li{margin:10px 0}.footer{padding:30px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:900px){.layout{grid-template-columns:1fr;padding:14px}.sidebar{position:relative;top:0;max-height:none}.sidebar nav{columns:2}.grid3{grid-template-columns:1fr}.hero{padding:25px}section{padding:20px}}@media(max-width:560px){.grid2{grid-template-columns:1fr}.sidebar nav{columns:1}.top{padding:10px 12px}.brand{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">PORT.IO × OPENCHOREO · PROJECT 702</div>
+  <div class="top-actions"><button id="themeBtn">🌙 Theme</button><button onclick="window.print()">🖨️ Print / Save PDF</button></div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+<h3>Guide contents</h3>
+<nav id="nav">
+<a href="#overview">1. Port overview</a><a href="#idp">2. Port as an IDP</a><a href="#architecture">3. Workflow architecture</a><a href="#triggers">4. Triggers</a><a href="#nodes">5. Nodes and connections</a><a href="#data">6. Data flow and JQ</a><a href="#github">7. GitHub integration</a><a href="#selfservice">8. Self-service workflows</a><a href="#governance">9. Permissions & governance</a><a href="#runs">10. Runs, logs & status</a><a href="#mcp">11. MCP and AI agents</a><a href="#catalog">12. Software catalog</a><a href="#example">13. Worked example</a><a href="#project">14. Project 702 mapping</a><a href="#architecture702">15. Target architecture</a><a href="#limitations">16. Limits & design decisions</a><a href="#roadmap">17. Implementation roadmap</a><a href="#testing">18. Testing checklist</a><a href="#compare">19. Port vs Plural vs Harness</a><a href="#glossary">20. Glossary</a><a href="#sources">21. Official references</a>
+</nav>
+</aside>
+<main class="content">
+<div class="hero">
+<div class="eyebrow">Complete technical research guide · Updated 12 October 2026</div>
+<h1>Port.io Workflows</h1>
+<p>A practical, detailed guide to Port’s workflow system and how its design patterns can inform <strong>WSO2 Project 702: PR-Driven Self-Service GitOps for OpenChoreo Developers</strong>.</p>
+<div class="pills"><span class="pill">Workflow engine</span><span class="pill">Self-service developer portal</span><span class="pill">GitHub PRs</span><span class="pill">GitOps</span><span class="pill">JQ data mapping</span><span class="pill">MCP / AI agents</span></div>
+<div class="callout warning"><strong>Important status note:</strong> Port’s Workflows documentation marks the feature as <em>Open Beta</em>. Features and APIs may change, and beta availability does not imply an SLA or guaranteed issue-resolution timeline. Check the live docs before depending on a feature in production.</div>
+</div>
+
+<section id="overview"><h2>1. What is Port?</h2>
+<p><strong>Port is a developer portal and internal developer platform (IDP) product.</strong> It helps engineering organisations create a unified software catalog and self-service experiences, and coordinate actions across systems such as GitHub, CI/CD tools, cloud platforms, ticketing systems, and observability tools.</p>
+<p>Port’s Workflows feature is a governed execution layer. It lets a platform team define an automation once, then expose it through a self-service form, a catalog event, an API, a schedule, or an AI agent, depending on the configured trigger types.</p>
+<div class="grid3">
+<div class="card"><strong>Discover</strong><span class="muted">Catalog software, services, teams, environments, ownership, and metadata.</span></div>
+<div class="card"><strong>Request</strong><span class="muted">Give developers forms and controlled actions rather than asking them to learn every backend system.</span></div>
+<div class="card"><strong>Orchestrate</strong><span class="muted">Connect validation, branching, integrations, and external automation into one workflow.</span></div>
+</div>
+<h3>What Port is—and is not</h3>
+<p>Port is not itself a replacement for Kubernetes, Flux CD, a Git provider, or every CI/CD engine. It coordinates operations across connected systems. Those systems remain responsible for their own work: GitHub manages repositories and PRs; CI executes builds; GitOps controllers reconcile desired state; Kubernetes runs workloads.</p>
+<div class="callout"><strong>Core mental model:</strong> Port defines and governs the workflow; connected systems perform the underlying operations.</div>
+</section>
+
+<section id="idp"><h2>2. Port as an Internal Developer Platform</h2>
+<h3>2.1 The developer problem</h3>
+<p>Without a self-service platform, a developer may need to ask another team to create a repository, change a deployment, open a ticket, provision an environment, or perform a release. The process can be slow, inconsistent, and difficult to audit.</p>
+<p>Port can put a curated interface in front of those operations. Platform engineers define the allowed inputs and the workflow logic; developers use the approved interface.</p>
+<h3>2.2 The software catalog</h3>
+<p>Port’s catalog stores entities described by blueprints. A blueprint defines the structure of a type of entity, such as a service, team, environment, deployment, or workflow. Entity properties and relations provide context for workflows and portal pages.</p>
+<div class="diagram">Software Catalog
+  ├── Service: payments-api
+  │     ├── owner → Payments Team
+  │     ├── repository → GitHub URL
+  │     ├── environment → staging
+  │     └── deployment status → healthy
+  ├── Team: Payments Team
+  └── Environment: staging
+           |
+           v
+Workflow can resolve known context and validate user input</div>
+<p>The names above are examples. A real Port catalog uses the blueprints and properties configured by the organisation.</p>
+<h3>2.3 Why catalog context matters</h3>
+<p>A workflow can ask for a service entity rather than an arbitrary text string. That can reduce typos and let the workflow use known service metadata. However, the catalog must be populated and maintained accurately; Port cannot infer reliable ownership or deployment data if the underlying integrations and schemas are missing or stale.</p>
+</section>
+
+<section id="architecture"><h2>3. Port Workflows Architecture</h2>
+<p>Port describes each workflow as a directed graph of nodes connected by edges. Nodes represent entry points, operations, or branching logic. Connections establish execution order and pass data between nodes.</p>
+<div class="diagram">                 DEVELOPER / EVENT / API / AI AGENT
+                                |
+                                v
+                         Workflow Trigger
+                                |
+                                v
+                       Validate / Prepare Data
+                                |
+                                v
+                         Condition Node
+                         /            \
+                  path A              path B
+                    |                   |
+                    v                   v
+             Integration Action   Webhook / Custom
+                    |                   |
+                    +---------+---------+
+                              |
+                              v
+                     Update / Report Result
+                              |
+                              v
+                       Workflow Run Record</div>
+<div class="grid2">
+<div class="card"><strong>Trigger</strong>Starts the workflow and supplies inputs/context.</div>
+<div class="card"><strong>Action</strong>Performs an operation, such as a GitHub action or webhook call.</div>
+<div class="card"><strong>Condition</strong>Evaluates expressions and selects a branch.</div>
+<div class="card"><strong>Connection</strong>Defines which node follows another and allows outputs to flow forward.</div>
+</div>
+<h3>3.1 How a workflow is authored</h3>
+<p>Port’s documentation describes three approaches: visual editor, JSON editor, and AI-assisted workflow generation. The visual editor is useful for understanding the graph; JSON is useful for reviewing the exact configuration; AI generation can accelerate a draft but should not replace review and testing.</p>
+<h3>3.2 A workflow is not necessarily a CI pipeline</h3>
+<p>A Port workflow can trigger a CI pipeline, but it is broader than a build pipeline. It may combine catalog context, conditions, approvals, GitHub operations, webhooks, and status updates. Think of it as a cross-system orchestration layer.</p>
+</section>
+
+<section id="triggers"><h2>4. Trigger Types</h2>
+<p>Port documents four trigger types. A workflow can define multiple triggers, so one workflow definition may support more than one entry point when configured accordingly.</p>
+<div class="tablewrap"><table><thead><tr><th>Trigger</th><th>What starts it</th><th>Example</th><th>Project 702 analogy</th></tr></thead><tbody>
+<tr><td><strong>Human form / self-service</strong></td><td>A user submits a form in the portal, or the trigger is invoked through an API.</td><td>Request promotion of a component to staging.</td><td>Backstage Scaffolder form.</td></tr>
+<tr><td><strong>Catalog event</strong></td><td>A catalog entity is created, updated, or deleted.</td><td>When a service entity is created, prepare onboarding tasks.</td><td>React to a resource/catalog event where supported.</td></tr>
+<tr><td><strong>Agent / MCP</strong></td><td>An AI agent discovers and invokes an exposed workflow tool.</td><td>“Prepare a staging release for payments-api.”</td><td>Potential future interface; not required for MVP.</td></tr>
+<tr><td><strong>Schedule</strong></td><td>A scheduled trigger runs according to configured timing.</td><td>Run a routine audit or cleanup.</td><td>Optional future maintenance automation.</td></tr>
+</tbody></table></div>
+<h3>Trigger design principles</h3>
+<ul><li>Keep inputs explicit, typed, and well-described.</li><li>Validate identifiers against authoritative data.</li><li>Define who may execute each entry point.</li><li>Do not assume all trigger types are automatically enabled or safe without configuration.</li><li>Make workflow titles and descriptions meaningful to both humans and agents.</li></ul>
+</section>
+
+<section id="nodes"><h2>5. Nodes, Connections, and Branching</h2>
+<h3>5.1 Action nodes</h3>
+<p>Action nodes perform work. Port documents native integration actions for supported systems, plus webhook and other execution patterns. The exact nodes available depend on Port’s current capabilities and the installed integrations.</p>
+<h3>5.2 Condition nodes</h3>
+<p>Conditions use JQ expressions. Each branch has an expression; Port evaluates the options and follows the first matching expression, or a fallback path if no expression matches. The order and fallback behaviour should be tested carefully.</p>
+<h3>5.3 Connections</h3>
+<p>A connection links a source node to a target node. Outputs from earlier nodes can be referenced by later nodes, allowing the workflow to use a result such as a created PR URL in a subsequent status update or notification.</p>
+<div class="diagram">trigger ──> validate ──> condition
+                              ├── valid ──> create-pr ──> report-success
+                              └── invalid ─────────────> report-error</div>
+<div class="callout"><strong>Design advice:</strong> Make failure paths visible. A workflow should not quietly continue when validation or PR creation fails unless that behaviour is explicitly intended.</div>
+</section>
+
+<section id="data"><h2>6. Data Flow, Outputs, and JQ</h2>
+<p>Port workflow nodes can produce outputs. Later nodes use expressions to read those outputs and construct payloads. Port uses JQ expressions for conditions and data mapping.</p>
+<h3>6.1 Conceptual example</h3>
+<p>Suppose a trigger receives a service identifier and a target environment. A later action needs those values in its payload. The workflow can reference the trigger’s output fields instead of hard-coding the values.</p>
+<div class="codewrap"><button class="copy" data-copy="jqexample">Copy</button><pre class="code" id="jqexample">{
+  "service": "{{ .outputs.trigger.service }}",
+  "environment": "{{ .outputs.trigger.environment }}"
+}</pre></div>
+<p class="muted">This illustrates Port’s documented output-template style used in examples. The exact syntax depends on the action configuration field and Port’s current workflow schema; use the official docs when implementing it.</p>
+<h3>6.2 Example condition logic</h3>
+<p>Conceptually, a workflow could choose one branch for a staging target and another for production. The condition expression must use the data shape available at runtime.</p>
+<div class="codewrap"><button class="copy" data-copy="conditionexample">Copy</button><pre class="code" id="conditionexample"># Conceptual JQ expression only — adapt to the actual node input
+.outputs.trigger.environment == "production"</pre></div>
+<p>Do not paste this expression blindly into a workflow: verify the expression context and exact syntax in the current Port editor and documentation.</p>
+<h3>6.3 Why data mapping matters</h3>
+<ul><li>It passes user input to connected systems.</li><li>It makes branching decisions data-driven.</li><li>It enables an action result to inform later nodes.</li><li>It can reduce duplicated configuration across workflows.</li></ul>
+</section>
+
+<section id="github"><h2>7. GitHub Integration and Pull Requests</h2>
+<p>Port’s GitHub integration actions can trigger GitHub Actions workflows, create or update pull requests, and create issues. These actions use the configured GitHub integration and its credentials. Repository and token/app permissions must allow the requested operation.</p>
+<h3>7.1 Typical GitHub workflow</h3>
+<div class="flow"><div class="node">Port trigger<br><span class="muted">Form inputs</span></div><div class="arrow">→</div><div class="node">Validate<br><span class="muted">Context / policy</span></div><div class="arrow">→</div><div class="node">GitHub action<br><span class="muted">PR / dispatch</span></div><div class="arrow">→</div><div class="node">Report result<br><span class="muted">Link / status</span></div></div>
+<h3>7.2 Requirements and caveats</h3>
+<ul><li>A GitHub integration must be installed in the Port organisation.</li><li>The integration needs the permissions required by the operation, such as write access to pull requests for PR creation.</li><li>Triggering a GitHub Actions workflow requires a suitable workflow in the target repository and the expected dispatch configuration.</li><li>For self-hosted Ocean installations, action processing may need to be enabled explicitly. The current docs specify configuration such as enabling the actions processor.</li><li>Do not place secrets into ordinary workflow inputs or assume every action supports secret references. Port’s integration-action overview notes limitations around secrets in integration actions.</li></ul>
+<h3>7.3 PR creation is not deployment</h3>
+<div class="diagram">Port creates PR
+     |
+     v
+Git provider review / checks
+     |
+     v
+PR merged
+     |
+     v
+GitOps controller observes desired state
+     |
+     v
+Reconciliation + health evaluation
+     |
+     v
+Application status</div>
+<p>The PR is the reviewable change mechanism. GitOps is the deployment/reconciliation mechanism. A successful PR creation or merge does not prove that the application deployed successfully.</p>
+</section>
+
+<section id="selfservice"><h2>8. Self-Service Workflows</h2>
+<p>Port’s self-service model lets platform teams create reusable developer experiences for routine tasks while connecting those experiences to existing infrastructure and automation.</p>
+<h3>Common examples</h3>
+<div class="grid3"><div class="card"><strong>Scaffold a service</strong>Create a repository or start a service template.</div><div class="card"><strong>Provision a resource</strong>Request an environment or cloud resource.</div><div class="card"><strong>Deploy or redeploy</strong>Trigger a delivery workflow for a selected version.</div><div class="card"><strong>Rollback</strong>Start an approved rollback operation.</div><div class="card"><strong>Scale an application</strong>Request a replica-count change.</div><div class="card"><strong>Update catalog state</strong>Report a workflow result or update relevant metadata.</div></div>
+<h3>What makes a self-service workflow good?</h3>
+<ol><li>It asks for the minimum required inputs.</li><li>It resolves known context from the catalog where possible.</li><li>It validates input and permissions before performing changes.</li><li>It makes side effects explicit.</li><li>It exposes progress and failure reasons.</li><li>It returns useful outputs such as a PR link or execution link.</li><li>It leaves a trace that helps teams understand who requested what and what happened.</li></ol>
+</section>
+
+<section id="governance"><h2>9. Permissions, Approvals, and Governance</h2>
+<h3>9.1 Execute permissions</h3>
+<p>Port workflow permissions control who can invoke a workflow. The documentation describes role, user, team, and policy-based restrictions, including restrictions based on the source of an invocation. Workflows without explicit execute permissions default to Admin-only under the documented behaviour; admins can always execute workflows.</p>
+<h3>9.2 Read/write versus execute permissions</h3>
+<p>Permission to view or edit a workflow definition is separate from permission to execute it. This distinction matters: a developer may be allowed to request an approved operation without being allowed to change the automation that performs it.</p>
+<h3>9.3 Organization-level execution context</h3>
+<p>Port documents that workflows execute with organization-level permissions. That can exceed the privileges of the person who created the workflow. Consequently, workflow owners must review and scope actions carefully to prevent privilege escalation or unintended access.</p>
+<h3>9.4 Human approvals and policy checks</h3>
+<p>Approval and policy mechanisms can be used as guardrails for sensitive operations. Exact approval configuration depends on the trigger and workflow features available in the current Port release.</p>
+<div class="callout warning"><strong>Security rule:</strong> A workflow that can create PRs, trigger deployments, or modify infrastructure is privileged automation. Restrict who can invoke it, validate all inputs, scope integration permissions, and test both UI and API/MCP invocation paths.</div>
+<h3>9.5 Example governance matrix</h3>
+<div class="tablewrap"><table><tr><th>Operation</th><th>Example control</th></tr><tr><td>Development promotion</td><td>Team membership and validation.</td></tr><tr><td>Production promotion</td><td>Explicit review/approval and required repository checks.</td></tr><tr><td>Workflow definition edits</td><td>Restricted workflow catalog write permissions.</td></tr><tr><td>AI/MCP invocation</td><td>Restrict eligible workflows and invocation source; validate machine-token policies.</td></tr></table></div>
+</section>
+
+<section id="runs"><h2>10. Workflow Runs, Logs, and Status</h2>
+<p>Port provides workflow testing and run-level visibility, including step-by-step execution and logs according to its current workflow documentation. These capabilities help operators see which node ran, what succeeded, and where a failure occurred.</p>
+<h3>Statuses should represent different facts</h3>
+<div class="tablewrap"><table><tr><th>Signal</th><th>What it tells you</th><th>What it does not prove</th></tr><tr><td>Workflow run succeeded</td><td>The configured workflow execution reached its success outcome.</td><td>It does not automatically prove that a downstream app is healthy.</td></tr><tr><td>PR opened</td><td>A proposed repository change exists.</td><td>The change is not yet accepted or deployed.</td></tr><tr><td>PR merged</td><td>The repository accepted the change.</td><td>GitOps reconciliation may still fail.</td></tr><tr><td>GitOps synced</td><td>The controller reports desired-state synchronization.</td><td>The application may still be unhealthy.</td></tr><tr><td>Application healthy</td><td>The relevant health checks report a healthy application.</td><td>It does not prove the workflow's governance was correct.</td></tr></table></div>
+<p>For Project 702, the same separation is essential. The Backstage UI should not display “deployment successful” merely because the PR was created or merged.</p>
+</section>
+
+<section id="mcp"><h2>11. MCP and AI Agents</h2>
+<p>Port documents that self-service workflows can be exposed as tools through its MCP server. An agent can discover available workflows, read their descriptions and input schemas, and invoke the matching workflow. The same workflow permissions are relevant to human and agent invocation, subject to documented token and policy behaviour.</p>
+<h3>11.1 Documented discovery and execution pattern</h3>
+<div class="diagram">User asks an agent to perform a task
+             |
+             v
+Agent discovers available self-service triggers
+             |
+             v
+Agent reads workflow description + input schema
+             |
+             v
+Agent resolves the required inputs
+             |
+             v
+Agent invokes the workflow
+             |
+             v
+Workflow validates and executes configured logic
+             |
+             v
+Agent reports result / run link</div>
+<p>The Port documentation names tools including <code>list_self_service_triggers</code> for discovering executable workflow triggers and <code>trigger_run</code> for invocation. Exact tool behaviour and schemas should be verified against the live documentation.</p>
+<h3>11.2 What this means for platform engineering</h3>
+<p>The agent does not need to invent an unrestricted deployment procedure. Instead, it selects a platform-engineer-defined workflow, provides structured inputs, and lets that workflow apply its validations, permissions, and execution logic.</p>
+<h3>11.3 Important security caveat</h3>
+<p>Port documents different permission behaviour for machine tokens and personal access tokens. Machine tokens may bypass static role/user/team checks by default, while policy checks can still be used to restrict invocation. AI/MCP should therefore be introduced only after permissions and source restrictions are understood and tested.</p>
+<h3>11.4 Relevance to Project 702</h3>
+<p>MCP support is an optional extension, not a prerequisite for the Project 702 MVP. First establish deterministic PR generation, validation, and status tracking. An agent interface can later invoke the same self-service workflow if the architecture is designed to expose a safe, stable operation.</p>
+</section>
+
+<section id="catalog"><h2>12. Software Catalog and Workflow Context</h2>
+<p>The catalog is useful because it provides structured information that a workflow can use to guide execution. For example, a service entity might include its owner, repository, language, lifecycle, deployment environment, and related resources.</p>
+<h3>12.1 Example entity model</h3>
+<div class="diagram">Service blueprint
+  properties:
+    identifier
+    repository URL
+    lifecycle
+    language
+    owner
+  relations:
+    team
+    environment
+    deployment
+       |
+       v
+Self-service workflow resolves service
+       |
+       v
+Validates ownership / target / required metadata
+       |
+       v
+Performs approved operation</div>
+<h3>12.2 Keep catalog data trustworthy</h3>
+<ul><li>Define clear property types and identifiers.</li><li>Synchronize data from authoritative systems where practical.</li><li>Define ownership and update responsibility.</li><li>Do not use catalog metadata as a substitute for authorization checks.</li><li>Handle missing or stale metadata as an explicit validation outcome.</li></ul>
+<p>For OpenChoreo, the existing component, project, environment, release, and deployment concepts should remain authoritative for the platform. A Port catalog model is a useful design reference, not a reason to create duplicate sources of truth.</p>
+</section>
+
+<section id="example"><h2>13. Worked Example: Request a Promotion</h2>
+<p>This example illustrates how a Port workflow could coordinate a PR-based promotion. It is a conceptual design, not a ready-to-import Port workflow JSON file.</p>
+<h3>13.1 Inputs</h3>
+<ul><li>Service/component identifier.</li><li>Source environment.</li><li>Target environment.</li><li>Release/version identifier.</li><li>Optional reason for the change.</li></ul>
+<h3>13.2 Proposed graph</h3>
+<div class="diagram">Self-service trigger
+   inputs: component, source, target, release
+             |
+             v
+Validate required inputs and catalog context
+             |
+             v
+Check promotion policy
+        /          \
+     allowed      rejected
+       |              |
+       v              v
+Prepare Git change  Return clear reason
+       |
+       v
+Create branch / commit (via configured automation)
+       |
+       v
+Create pull request
+       |
+       v
+Return PR URL + request metadata
+       |
+       v
+Later: correlate PR merge and GitOps result</div>
+<h3>13.3 Why the later status step matters</h3>
+<p>Creating a PR is only the start of the delivery lifecycle. A complete developer experience should correlate the PR with merge status, the Git revision, the GitOps controller's reconciliation status, and the application's health. Port can orchestrate connected systems, but the status integration and data model still need to be configured.</p>
+<div class="simulator">
+<h3>Interactive workflow simulator</h3>
+<p class="muted">This local simulator demonstrates the decision flow only. It does not connect to Port, GitHub, Flux, or any cluster.</p>
+<label for="serviceName">Component / service</label><input id="serviceName" value="payments-api">
+<label for="targetEnv">Target environment</label><select id="targetEnv"><option value="development">development</option><option value="staging" selected>staging</option><option value="production">production</option></select>
+<label for="validInput">Input validation</label><select id="validInput"><option value="valid" selected>Valid</option><option value="invalid">Invalid / missing identifier</option></select>
+<label for="policy">Policy outcome</label><select id="policy"><option value="allow" selected>Allowed</option><option value="deny">Denied</option></select>
+<button id="simulateBtn">▶ Run example</button>
+<div id="simResult" class="status" aria-live="polite">Ready. Choose inputs and run the example.</div>
+</div>
+<h3>13.4 Example PR description</h3>
+<div class="codewrap"><button class="copy" data-copy="prdesc">Copy</button><pre class="code" id="prdesc">Title: Promote payments-api to staging
+
+Summary:
+- Component: payments-api
+- Source environment: development
+- Target environment: staging
+- Release: &lt;release-identifier&gt;
+
+This PR was generated by the self-service promotion workflow.
+Please review the generated configuration and required checks before merging.
+
+Post-merge deployment status must be verified separately by the GitOps controller
+and the application health checks.</pre></div>
+<p class="muted">The identifiers and wording are illustrative. The actual repository layout and OpenChoreo manifest fields must come from the real project implementation.</p>
+</section>
+
+<section id="project"><h2>14. Port Concepts Applied to OpenChoreo Project 702</h2>
+<p>Your project is titled <strong>PR-Driven Self-Service GitOps for OpenChoreo Developers</strong>. The objective is to let developers request supported deployment changes from the existing Backstage portal while ensuring the changes are represented as reviewable GitHub pull requests.</p>
+<h3>14.1 What OpenChoreo already provides</h3>
+<p>The supplied OpenChoreo UI reference describes OpenChoreo as a modular, Kubernetes-oriented internal developer platform with a Backstage-powered portal, CI/CD, GitOps, and observability. It documents component, release, environment, and deployment-related developer experiences.</p>
+<p>The supplied repository review says the MVP work belongs primarily in the Backstage plugins; it identifies existing <code>occ</code> generation capabilities and an existing GitHub PR action, while GitOps-specific Scaffolder actions and status tracking need implementation.</p>
+<h3>14.2 Port-to-OpenChoreo concept mapping</h3>
+<div class="tablewrap"><table><tr><th>Port concept</th><th>Project 702 equivalent / analogy</th><th>Important distinction</th></tr>
+<tr><td>Developer portal / self-service hub</td><td>Existing OpenChoreo Backstage portal</td><td>Do not add a second portal unless there is a separate requirement.</td></tr>
+<tr><td>Workflow trigger form</td><td>Backstage Scaffolder template parameters</td><td>Similar developer experience, different product/API model.</td></tr>
+<tr><td>Action node</td><td>Custom Backstage Scaffolder action</td><td>Implement OpenChoreo-aware behaviour in the existing plugin.</td></tr>
+<tr><td>Condition node</td><td>Validation and branching in the Scaffolder workflow</td><td>Use the project's code patterns and typed validation, not Port JQ syntax by default.</td></tr>
+<tr><td>Catalog context</td><td>OpenChoreo component/project/environment data</td><td>Keep OpenChoreo as the authoritative source for its resources.</td></tr>
+<tr><td>GitHub integration action</td><td>Existing GitHub PR publishing action</td><td>Verify inputs, permissions, and repo context.</td></tr>
+<tr><td>Workflow run status</td><td>Scaffolder task + PR + GitOps/deployment status</td><td>One task status cannot represent the entire deployment lifecycle.</td></tr>
+<tr><td>MCP-exposed workflow</td><td>Possible future agent interface</td><td>Optional; not needed to prove the MVP.</td></tr>
+</table></div>
+<h3>14.3 The most important lesson</h3>
+<div class="callout"><strong>Do not copy Port’s implementation wholesale.</strong> Borrow the design pattern: one well-defined self-service request, explicit inputs, validation, branching, integration, auditability, and status reporting. Implement those responsibilities with the existing Backstage Scaffolder, <code>occ</code>, GitHub integration, and Flux/OpenChoreo architecture.</div>
+</section>
+
+<section id="architecture702"><h2>15. Recommended Project 702 Architecture</h2>
+<div class="diagram">                 OPENCHOREO PROJECT 702
+
+Developer
+   |
+   v
+Existing Backstage Portal
+   |
+   v
+Scaffolder Template / Form
+   |
+   v
+Validate Inputs + Authorization + Conflict Check
+   |
+   v
+Custom GitOps Scaffolder Actions
+   |
+   +---- invoke existing `occ` generation
+   |
+   +---- write generated OpenChoreo resources
+   |
+   +---- prepare repository change
+   |
+   v
+Git Branch + Commit
+   |
+   v
+GitHub Pull Request
+   |
+   +---- reviews / branch protection / CI
+   |
+   v
+Merge into tracked GitOps branch
+   |
+   v
+Flux CD (existing GitOps controller)
+   |
+   v
+OpenChoreo Control Plane Reconciliation
+   |
+   v
+Kubernetes workload / environment
+   |
+   v
+Status correlation back to portal</div>
+<h3>15.1 Core implementation requirements</h3>
+<ol><li><strong>Use existing resource generation.</strong> Reuse the documented <code>occ</code> generation commands where appropriate rather than hand-building OpenChoreo resources with ad-hoc templates.</li><li><strong>Account for runtime packaging.</strong> The repository review notes that <code>occ</code> is not already packaged in the Backstage backend image; decide how the executable will be installed and invoked safely.</li><li><strong>Detect conflicts.</strong> Check the repository and relevant resource state before publishing changes.</li><li><strong>Reuse the GitHub PR integration.</strong> Do not build a parallel PR mechanism without a clear reason.</li><li><strong>Prevent GitOps bypasses.</strong> In GitOps mode, supported promotion and override operations should not silently mutate the live control plane through direct API writes.</li><li><strong>Track the full lifecycle.</strong> Correlate request → PR → merge revision → Flux reconciliation → final resource/application status.</li></ol>
+<h3>15.2 Promotion and overrides</h3>
+<p>The supplied OpenChoreo reference describes a ComponentRelease as an immutable release snapshot and ReleaseBinding as the environment association. Promotion may create or update the relevant ReleaseBinding. Overrides can require separate environment-specific YAML changes, so do not assume the release-binding generator handles all override work.</p>
+</section>
+
+<section id="limitations"><h2>16. Limits, Risks, and Design Decisions</h2>
+<div class="grid2">
+<div class="card"><strong>Open Beta</strong><span class="muted">Port Workflows may change. Confirm feature availability and API behaviour before production dependency.</span></div>
+<div class="card"><strong>Integration dependency</strong><span class="muted">A workflow can only perform an external action if the integration, credentials, permissions, and runtime are configured.</span></div>
+<div class="card"><strong>Not a GitOps controller</strong><span class="muted">Port can orchestrate changes, but Flux or another controller handles reconciliation in the target design.</span></div>
+<div class="card"><strong>Not automatic status correlation</strong><span class="muted">PR status, GitOps status, and application health require explicit data integration.</span></div>
+<div class="card"><strong>Privilege risk</strong><span class="muted">Workflow actions can execute with organization-level permissions. Restrict and audit them.</span></div>
+<div class="card"><strong>Catalog quality</strong><span class="muted">Bad or stale catalog metadata can lead to poor context or incorrect workflow decisions.</span></div>
+</div>
+<h3>Decisions to make before implementation</h3>
+<ul><li>Which operations must create a PR and which remain direct operations?</li><li>What repository and branch are authoritative for Flux?</li><li>What is the required conflict-check strategy?</li><li>How will the system handle duplicate requests and retries?</li><li>What permissions and review policies are required for production?</li><li>How will PRs be correlated with GitOps and application status?</li><li>Which information is safe to include in logs and workflow outputs?</li></ul>
+</section>
+
+<section id="roadmap"><h2>17. Suggested Implementation Roadmap</h2>
+<div class="grid2">
+<div class="card"><strong>Phase 1 — PR-based promotion</strong><p>Build the form, validation, conflict checks, <code>occ</code> generation, file writing, and GitHub PR creation.</p><span class="tag">MVP priority</span></div>
+<div class="card"><strong>Phase 2 — Lifecycle status</strong><p>Track PR open/merge state, relevant revision, Flux reconciliation, and final deployment status.</p><span class="tag">MVP completeness</span></div>
+<div class="card"><strong>Phase 3 — Overrides through PR</strong><p>Add environment-specific override generation, validation, and PR flow.</p><span class="tag">Next capability</span></div>
+<div class="card"><strong>Phase 4 — Advanced workflows</strong><p>Add richer policies, notifications, additional self-service operations, or MCP/AI integration after core reliability is established.</p><span class="tag">Optional extension</span></div>
+</div>
+<h3>Definition of done for the first workflow</h3>
+<ul><li>A valid request creates a PR containing the expected OpenChoreo configuration.</li><li>An invalid request fails with a clear explanation.</li><li>A conflict prevents unsafe publishing.</li><li>A generation or GitHub error does not produce a false-success result.</li><li>PR creation is clearly separated from deployment success.</li><li>The portal provides a useful link and task/request identity.</li><li>Credentials are not exposed in logs or generated files.</li></ul>
+</section>
+
+<section id="testing"><h2>18. Testing and Troubleshooting Checklist</h2>
+<div class="tablewrap"><table><tr><th>Scenario</th><th>Expected behaviour</th><th>Inspect</th></tr>
+<tr><td>Valid promotion</td><td>Generate expected files and create PR.</td><td>Scaffolder task logs, generated diff, PR link.</td></tr>
+<tr><td>Missing component</td><td>Fail validation; no PR.</td><td>Input schema and lookup logic.</td></tr>
+<tr><td>Invalid target environment</td><td>Reject or apply defined policy.</td><td>Environment source and authorization rules.</td></tr>
+<tr><td>Conflict detected</td><td>Stop before publishing unsafe change.</td><td>Branch/repository state and conflict output.</td></tr>
+<tr><td><code>occ</code> fails</td><td>Return generation error; no incomplete PR.</td><td>Binary availability, arguments, working directory, stderr.</td></tr>
+<tr><td>GitHub permissions insufficient</td><td>Report PR publishing error.</td><td>App/token scopes, repository access, action inputs.</td></tr>
+<tr><td>PR merged, Flux fails</td><td>Show merge succeeded but deployment failed.</td><td>Flux reconciliation status and events.</td></tr>
+<tr><td>Flux synced, app unhealthy</td><td>Show sync and health as separate signals.</td><td>Pods, probes, events, application metrics.</td></tr>
+<tr><td>Duplicate request</td><td>Prevent duplicate/conflicting PRs or handle idempotently.</td><td>Existing PR lookup and request correlation.</td></tr>
+<tr><td>Permission bypass attempt</td><td>Deny or log according to policy.</td><td>Portal/backend authorization and GitHub branch protection.</td></tr>
+</table></div>
+<h3>Debugging order</h3>
+<ol><li>Identify which stage failed: input, generation, Git operation, PR, GitOps, or application health.</li><li>Read the exact error and related logs.</li><li>Check credentials and permissions without printing secrets.</li><li>Confirm the repository, branch, and generated diff.</li><li>Inspect GitOps controller status and target resource events.</li><li>Report the correct state back to the portal.</li></ol>
+</section>
+
+<section id="compare"><h2>19. Port vs Plural vs Harness</h2>
+<p>These products overlap in developer experience and automation, but their central abstractions differ. This table is a conceptual comparison, not a feature-by-feature product guarantee.</p>
+<div class="tablewrap"><table><tr><th>Dimension</th><th>Port</th><th>Plural</th><th>Harness</th></tr>
+<tr><td>Central abstraction</td><td>Software catalog + workflows/self-service</td><td>PR Automation and platform/GitOps management</td><td>CI/CD pipelines, delivery orchestration, GitOps and governance</td></tr>
+<tr><td>Developer entry point</td><td>Port portal/self-service forms</td><td>Plural Console / PR Automation interface</td><td>Harness platform and pipelines</td></tr>
+<tr><td>Automation definition</td><td>Workflow graph with triggers, actions, conditions</td><td><code>PrAutomation</code>, templates and associated mechanisms</td><td>Pipeline stages/steps and GitOps configuration</td></tr>
+<tr><td>Git/PR</td><td>GitHub/GitLab/Azure DevOps integration actions depending on provider</td><td>PR automation is a core pattern</td><td>Available through configured integrations and workflows; do not assume every promotion auto-creates a PR</td></tr>
+<tr><td>Catalog/context</td><td>Strong software catalog and entity context</td><td>Platform/resource context via its model</td><td>Services, environments, infrastructure and delivery configuration</td></tr>
+<tr><td>GitOps engine</td><td>Orchestrates connected systems; does not replace Flux/Argo</td><td>GitOps-oriented platform management</td><td>Harness GitOps is built around Argo CD; provider integrations also exist</td></tr>
+<tr><td>AI/MCP</td><td>Documented workflow exposure through MCP</td><td>AI-assisted PR automation features documented by Plural</td><td>Capabilities depend on the current Harness products and integrations</td></tr>
+<tr><td>Project 702 lesson</td><td>Self-service graph, context, permissions, status visibility</td><td>Intent → deterministic Git change → PR → GitOps pattern</td><td>Delivery orchestration, approvals, verification and governance</td></tr>
+</table></div>
+<div class="callout"><strong>Recommendation for Project 702:</strong> Treat Port, Plural, and Harness as architectural references. Do not add any of them as a dependency unless the project explicitly requires it. Build the MVP using OpenChoreo’s Backstage plugins, existing <code>occ</code> generation, GitHub PR integration, and the existing GitOps controller.</div>
+</section>
+
+<section id="glossary"><h2>20. Glossary</h2>
+<div class="tablewrap"><table><tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>IDP</td><td>Internal Developer Platform: tools and workflows that help developers deliver software through supported platform capabilities.</td></tr>
+<tr><td>Software catalog</td><td>Structured inventory of services, teams, environments, deployments, and related entities.</td></tr>
+<tr><td>Blueprint</td><td>Schema describing a type of catalog entity.</td></tr>
+<tr><td>Entity</td><td>A catalog record that conforms to a blueprint.</td></tr>
+<tr><td>Workflow</td><td>A graph of triggers, actions, conditions, and connections.</td></tr>
+<tr><td>Trigger</td><td>An entry point that starts a workflow.</td></tr>
+<tr><td>Action node</td><td>A workflow step that performs an operation.</td></tr>
+<tr><td>Condition node</td><td>A branching step that evaluates expressions.</td></tr>
+<tr><td>JQ</td><td>A language/tool for querying and transforming JSON data, used in Port workflow expressions.</td></tr>
+<tr><td>Integration</td><td>A configured connection between Port and an external platform.</td></tr>
+<tr><td>MCP</td><td>Model Context Protocol, used to expose tools to compatible AI clients and agents.</td></tr>
+<tr><td>PR</td><td>Pull Request: a reviewable proposed change to a Git repository.</td></tr>
+<tr><td>GitOps</td><td>An approach where version-controlled declarative configuration is the source of desired state.</td></tr>
+<tr><td>Flux CD</td><td>A GitOps toolkit that reconciles Kubernetes state from configured sources.</td></tr>
+<tr><td><code>occ</code></td><td>OpenChoreo CLI referenced in Project 702 for generating OpenChoreo resources.</td></tr>
+<tr><td>ReleaseBinding</td><td>OpenChoreo resource associating a release with an environment, as described in the supplied project reference.</td></tr>
+</table></div>
+</section>
+
+<section id="sources"><h2>21. Official References and Source Basis</h2>
+<p>The technical explanations about Port below are based primarily on Port’s official documentation. The OpenChoreo mapping uses the Project 702 files supplied in this conversation and retrieved from your saved project materials. Architecture diagrams and proposed implementation flows are labelled as conceptual or recommended where they go beyond documented product facts.</p>
+<ul class="source-list">
+<li><a href="https://docs.port.io/workflows/overview/" target="_blank" rel="noopener">Port Workflows overview</a> — workflow model, trigger types, beta status, and overall positioning.</li>
+<li><a href="https://docs.port.io/workflows/concepts/" target="_blank" rel="noopener">Port workflow concepts and structure</a> — node types, connections, conditions, and outputs.</li>
+<li><a href="https://docs.port.io/workflows/build-workflows/quickstart/" target="_blank" rel="noopener">Port workflow quickstart</a> — visual editor, JSON editor, and AI-assisted creation.</li>
+<li><a href="https://docs.port.io/workflows/build-workflows/nodes/action-nodes/integration-actions/overview/" target="_blank" rel="noopener">Integration actions overview</a> — supported providers and how integration actions work.</li>
+<li><a href="https://www.docs.port.io/workflows/build-workflows/nodes/action-nodes/integration-actions/git/github/" target="_blank" rel="noopener">GitHub integration actions</a> — GitHub workflow dispatch, PR management, and prerequisites.</li>
+<li><a href="https://docs.port.io/workflows/permissions-and-rbac/permissions/" target="_blank" rel="noopener">Workflow execute permissions</a> — roles, teams, users, policies, and execution-source controls.</li>
+<li><a href="https://docs.port.io/workflows/permissions-and-rbac/workflow-catalog/" target="_blank" rel="noopener">Workflow catalog and ownership</a> — workflow ownership and read/write access.</li>
+<li><a href="https://docs.port.io/workflows/expose-as-tool/" target="_blank" rel="noopener">Expose workflows as tools</a> — MCP discovery and execution of self-service workflows.</li>
+<li><a href="https://docs.port.io/workflows/actions-and-automations/create-self-service-experiences/" target="_blank" rel="noopener">Self-service experiences</a> — self-service use cases and execution model.</li>
+<li><a href="https://www.plural.sh/" target="_blank" rel="noopener">Plural</a> — comparison reference.</li>
+<li><a href="https://developer.harness.io/" target="_blank" rel="noopener">Harness Developer Hub</a> — comparison reference.</li>
+</ul>
+<div class="callout warning"><strong>Project source distinction:</strong> Port documentation describes Port’s product. It does not prove that OpenChoreo already has Port’s workflow engine, MCP tool exposure, JQ runtime, or catalog model. Those are analogies unless explicitly implemented in Project 702.</div>
+<h3>Final takeaway</h3>
+<p>Port’s key idea is to define a governed workflow once and make it available through a suitable entry point, with explicit context, branching, integrations, permissions, and execution visibility. For Project 702, the valuable pattern is not to recreate Port itself. It is to deliver the same kind of reliable self-service experience through OpenChoreo’s existing Backstage portal, Scaffolder, <code>occ</code>, GitHub pull requests, Flux CD, and status tracking.</p>
+</section>
+<div class="footer">Prepared for WSO2 Project 702 · Port.io Workflows research guide · Use the linked official docs to validate current schemas before implementation.</div>
+</main>
+</div>
+<script>
+const root=document.documentElement;
+const themeBtn=document.getElementById('themeBtn');
+themeBtn.addEventListener('click',()=>{const dark=root.getAttribute('data-theme')!=='dark';root.setAttribute('data-theme',dark?'dark':'light');themeBtn.textContent=dark?'☀️ Theme':'🌙 Theme';});
+document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{const el=document.getElementById(btn.dataset.copy);try{await navigator.clipboard.writeText(el.innerText);btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',1200)}catch(e){btn.textContent='Select text';}}));
+document.getElementById('simulateBtn').addEventListener('click',()=>{
+ const name=document.getElementById('serviceName').value.trim(), env=document.getElementById('targetEnv').value, valid=document.getElementById('validInput').value, policy=document.getElementById('policy').value, out=document.getElementById('simResult');
+ if(!name||valid==='invalid'){out.textContent='❌ Validation failed. No repository change or PR should be created. Return a clear input-validation error.';return}
+ if(policy==='deny'){out.textContent='⛔ Policy denied the request for '+name+' → '+env+'. Stop before generating or publishing changes, and explain the policy outcome.';return}
+ out.textContent='✅ Example path: validate '+name+' → '+env+'; prepare the Git change; create a PR; return its URL. This simulator does not perform any real GitHub or deployment operation. After merge, check GitOps reconciliation and application health separately.';
+});
+const sections=[...document.querySelectorAll('main section')], links=[...document.querySelectorAll('#nav a')];
+const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+entry.target.id));}}),{rootMargin:'-15% 0px -75% 0px'});
+sections.forEach(s=>observer.observe(s));
+</script>
+</body>
+</html>
